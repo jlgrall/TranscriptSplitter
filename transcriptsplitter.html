@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Transcript splitter</title>
+<link href="transcriptsplitter.css" type="text/css" rel="stylesheet" />
+<style>
+	body { font: 14px Helvetica, arial, sans-serif; }
+	a {text-decoration: none; }
+	
+	#homelink { position: absolute; top: 1px; right: 1px; }
+</style>
+</head>
+<body>
+
+Font: <button id="bFontMonoProp">monospaced &lt;-&gt; proportional</button>,
+action: <button id="bSplitSentences">Split sentences</button>
+
+<textarea class="transcript" rows="40" cols="130"></textarea>
+
+<div id="homelink"><a href="https://github.com/jlgrall/TranscriptSplitter">Transcript splitter v0.1</a></div>
+
+<script src="jquery-2.1.4.min.js"></script>
+<script src="gadget.js"></script>
+<script src="transcriptsplitter.js"></script>
+<script>
+$(function($) {
+	var textarea = $(".transcript").transcriptSplitter({
+			
+		}).focus();
+	
+	
+	var scrolledlinesDiv = $(".transsplitterwrap .scrolledlines"),
+		styledFontElems = $([textarea[0], scrolledlinesDiv[0]]);
+	$("#bFontMonoProp").click(function(e) {
+		var ta = textarea[0],
+			oldScrollPercent = (ta.scrollTop + ta.clientHeight/2) / ta.scrollHeight;
+		if(textarea[0].style.fontFamily) {
+			styledFontElems.css("fontSize", "");
+			styledFontElems.css("fontFamily", "");
+			textarea.css("backgroundImage", "");
+		}
+		else {
+			var oldHeight = textarea.innerHeight();	
+			styledFontElems.css("fontFamily", "Roboto, arial, sans-serif");
+			var height = textarea.innerHeight(),
+				fontSize = parseInt(textarea.css("fontSize"), 10);
+			styledFontElems.css("fontSize", fontSize * oldHeight / height);
+			textarea.css("backgroundImage", "none");
+		}
+		ta.scrollTop = oldScrollPercent * ta.scrollHeight - ta.clientHeight/2;
+	});
+	
+	
+	$("#bSplitSentences").click(function(e) {
+		var text = textarea.val(),
+			newText = text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
+		if(newText !== text) {
+			textarea.val(newText).focus().change();
+		}
+	});
+});
+</script>
+</body>
+</html>

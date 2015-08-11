@@ -1,0 +1,88 @@
+/* TranscriptSplitter v0.1 - Jean-Louis Grall - MIT License - https://github.com/jlgrall/TranscriptSplitter */
+
+.transsplitterwrap {
+	display: table;
+	border: 1px solid #c0c0c0;
+	padding: 4px;
+}
+
+.transsplitterwrap .scrolledlines,
+.textareawrap textarea,
+.transsplitterwrap .linepos {
+	font-size: 14px;
+	font-family: monospace;
+	line-height: normal !important;
+}
+
+.lines,
+.textareawrap {
+	display: table-cell;
+	vertical-align: top;
+}
+
+.transsplitterwrap .lines {
+	overflow: hidden;
+	width: 40px;
+	border-right: 1px solid #c0c0c0;
+}
+
+.transsplitterwrap .scrolledlines {
+	height: 1px;
+	position: relative;
+}
+
+.transsplitterwrap .scrolledlines .lineinfo {
+	white-space: nowrap;
+	text-align: right;
+	color:#AAA;
+	padding-right: 0.5em;
+}
+
+.textareawrap textarea {
+	border: 0;
+}
+
+.transsplitterwrap .linepos {
+	display: inline-block;
+	width: 60px;
+	text-align: right;
+}
+
+.transsplitterwrap .scrolledlines,
+.textareawrap textarea {
+	margin: 1px 0;
+	padding: 4px 4px 0 1px;
+}
+
+.transsplitterwrap .scrolledlines {
+	padding-right: 0;
+}
+
+.textareawrap textarea {
+	margin-left: 4px;
+}
+
+.transsplitterwrap .scrolledlines .error,
+.transsplitterwrap .linepos.error {
+	color: red;
+}
+
+
+.textareawrap textarea {
+	/* For Chrome 25 and Safari 6, iOS 6.1, Android 4.3 */
+	background-image: -webkit-linear-gradient(left, #fcc, #fcc),
+					  -webkit-linear-gradient(left, #fdd, #fdd);
+	/* For Firefox (3.6 to 15) */
+	background-image:  -moz-linear-gradient(left, #fcc, #fcc),
+					   -moz-linear-gradient(left, #fdd, #fdd);
+	/* For old Opera (11.1 to 12.0) */ 
+	background-image:    -o-linear-gradient(left, #fcc, #fcc),
+					     -o-linear-gradient(left, #fdd, #fdd);
+	/* Standard syntax */ 
+	background-image:       linear-gradient(to right, #fcc, #fcc),
+					        linear-gradient(to right, #fdd, #fdd);
+	background-position:  10000px 0, 10000px 0;
+	background-size: 1000% 100%, 1000% 100%;
+	background-repeat: no-repeat, no-repeat;
+	background-origin: content-box, content-box;
+}
