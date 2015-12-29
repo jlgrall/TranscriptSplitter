@@ -292,7 +292,7 @@
 			});
 			
 			
-			/* Event scroll: then scroll lines and scroll backgrounds */
+			/* Event scroll: make lineinfos and backgrounds scroll in sync */
 			var lastScrollTop = 0,
 				lastScrollLeft = 0;
 			textarea.on("scroll", function(e) {

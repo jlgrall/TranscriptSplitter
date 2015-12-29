@@ -13,7 +13,7 @@
 				for(var i = 0; i < this.length; i++) {
 					elem = this[i];
 					
-					// Get the Meltdown object or create it:
+					// Get the instance object or create it:
 					instance = $.data(elem, gadgetFullName);
 					if(!instance) {
 						args = Array_slice.call(arguments);
