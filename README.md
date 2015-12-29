@@ -16,6 +16,11 @@ Compatible with modern browsers and IE9+.
 
 **Online demo:** [Transcript Splitter](http://jlgrall.github.io/TranscriptSplitter/transcriptsplitter.html)
 
+**Use cases:**
+
+- you get better results when you split your lines before you let [YouTube's automatic timing](https://support.google.com/youtube/answer/2734799) work for you.
+- paste the content of a SubRip (.srt) file to fix the line lengths visually.
+
 Published under the MIT license.
 
 Inspired by [JQuery Lined TextArea plugin](http://alan.blog-city.com/jquerylinedtextarea.htm)
