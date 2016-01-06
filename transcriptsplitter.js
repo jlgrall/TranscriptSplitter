@@ -248,7 +248,7 @@
 						ta.scrollTop -= textareaLineHeight;
 						if(text.charAt(caret - 1) !== "\n" && caret > 0) {
 							var spacePos = findCharAroundPos(text, caret, " ", [-1, 0]);
-							if(spacePos === -1) {
+							if(spacePos === -1 && text.charAt(caret) !== "\n" && caret < text.length) {
 								text = spliceTextarea(ta, text, caret, 0, " ");
 							}
 						}
