@@ -38,6 +38,14 @@
 	padding-right: 0.5em;
 }
 
+.transsplitterwrap .scrolledlines .lineinfo.empty {
+	visibility: hidden;
+}
+
+.transsplitterwrap .lines:hover .lineinfo.empty {
+	visibility: visible;
+}
+
 .textareawrap textarea {
 	border: 0;
 }

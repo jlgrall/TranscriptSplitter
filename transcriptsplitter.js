@@ -68,6 +68,8 @@
 			return baseLineinfoElement.clone();
 		},
 		updateLineElement = function(elem, length) {
+			if(length === 0) elem.addClass("empty");
+			else elem.removeClass("empty");
 			if(length > maxLength) elem.addClass("error");
 			else elem.removeClass("error");
 			return elem.text(length);
