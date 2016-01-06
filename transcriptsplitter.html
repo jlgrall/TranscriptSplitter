@@ -54,7 +54,10 @@ $(function($) {
 	
 	$("#bSplitSentences").click(function(e) {
 		var text = textarea.val(),
-			newText = text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
+			// Original: text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
+			newText = text.replace(/(\.|\!|\?)(?: \n?|\n)\n?/g, function(match, p1, offset) {
+				return text.length > offset + match.length ? p1 + "\n\n" : match;
+			});
 		if(newText !== text) {
 			textarea.val(newText).focus().change();
 		}
