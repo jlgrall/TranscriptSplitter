@@ -42,6 +42,7 @@
 			};
 		
 		gadget.constr = Constr;
+		gadget.prototype = Constr.prototype;
 		
 		return gadget;
 	};
