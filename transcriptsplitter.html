@@ -63,6 +63,19 @@ $(function($) {
 			$textarea.val(newText).focus().change();
 		}
 	});
+	
+	
+	var $window = $(window),
+		$document = $(document),
+		$html = $("html"),
+		$body = $("body");
+	
+	var resizeTextarea = window.resizeTextarea = function() {
+			var height = $window.height() - ($html.height() - $textarea.height());
+			$textarea.height(height);
+		};
+	$window.on("resize", resizeTextarea);
+	resizeTextarea();
 });
 </script>
 </body>

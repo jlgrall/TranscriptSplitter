@@ -46,10 +46,6 @@
 	visibility: visible;
 }
 
-.textareawrap textarea {
-	border: 0;
-}
-
 .transsplitterwrap .linepos {
 	display: inline-block;
 	width: 60px;
@@ -67,7 +63,10 @@
 }
 
 .textareawrap textarea {
+	border: 0;
 	margin-left: 4px;
+	min-width: 50px;
+	min-height: 50px;
 }
 
 .transsplitterwrap .scrolledlines .error,

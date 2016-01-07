@@ -224,6 +224,8 @@
 			/* Positions of backgrounds relative to the characters width */
 			var charWidth = getCharWidthFor($textarea),
 				bgPos = [charWidth * 2 * maxLength, charWidth * maxLength];
+				
+			this.originalCSSWidth = ta.style.width;
 			
 			/* Narrow the width of $textarea */
 			if(options.keepWidth) {
@@ -330,6 +332,7 @@
 			$textarea.off(".transcriptWriter");
 			this.$transsplitterwrapDiv.before($textarea).remove();
 			$textarea.css("backgroundPosition", "");
+			$textarea[0].style.width = this.originalCSSWidth;
 			if(this.originalWrap === undefined) $textarea.removeAttr("wrap");
 			else $textarea.attr("wrap", this.originalWrap);
 		}
