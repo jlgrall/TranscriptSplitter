@@ -156,12 +156,12 @@
 			temp.remove();
 			return charWidth;
 		},
-		setbgPos = function(textarea, bgPos, scrollLeft) {
+		setbgPos = function($textarea, bgPos, scrollLeft) {
 			var arr = [];
 			for(var i = 0, l = bgPos.length; i < l; i++) {
 				arr.push((bgPos[i] - scrollLeft) + "px 0");
 			}
-			textarea.css("backgroundPosition", arr.join(","));
+			$textarea.css("backgroundPosition", arr.join(","));
 		},
 		findCaret = function(ta) {
 			return ta.selectionDirection === "forward" ? ta.selectionEnd : ta.selectionStart;
@@ -194,17 +194,20 @@
 	
 	
 	
-	var transcriptSplitter = function(textarea, options) {
+	var transcriptSplitter = function($textarea, options) {
 			
 			// Get the Options
-			var opts = $.extend({}, $.fn.transcriptSplitter.prototype.options, options);
+			options = this.options = $.extend({}, $.fn.transcriptSplitter.prototype.options, options);
 			
+			this.$textarea = $textarea;
+			this.textarea = $textarea[0];
 			
-			var ta = textarea[0],
-				textareaOriginalWidth = textarea.outerWidth();
+			var ta = $textarea[0],
+				textareaOriginalWidth = $textarea.outerWidth();
 			
 			/* Turn off the wrapping of lines as we don't want to screw up the line numbers */
-			textarea.attr("wrap", "off");
+			this.originalWrap = $textarea.attr("wrap");
+			$textarea.attr("wrap", "off");
 			
 			/* Wrap the text area in the elements we need */
 			var transsplitterwrapDiv = $("<div class='transsplitterwrap'></div>"),
@@ -213,17 +216,19 @@
 				linedTextAreaDiv = $("<div class='textareawrap'></div>").appendTo(transsplitterwrapDiv),
 				linePosDiv = $("<div class='linepos'>-1</div>").appendTo(transsplitterwrapDiv);
 			
-			transsplitterwrapDiv.insertAfter(textarea);
-			linedTextAreaDiv.append(textarea);
+			this.$transsplitterwrapDiv = transsplitterwrapDiv;
+			
+			transsplitterwrapDiv.insertAfter($textarea);
+			linedTextAreaDiv.append($textarea);
 			
 			/* Positions of backgrounds relative to the characters width */
-			var charWidth = getCharWidthFor(textarea),
+			var charWidth = getCharWidthFor($textarea),
 				bgPos = [charWidth * 2 * maxLength, charWidth * maxLength];
 			
-			/* Narrow the width of textarea */
-			if(opts.keepWidth) {
-				var addedWidth = transsplitterwrapDiv.outerWidth() - textarea.outerWidth();
-				textarea.outerWidth(textareaOriginalWidth - addedWidth);
+			/* Narrow the width of $textarea */
+			if(options.keepWidth) {
+				var addedWidth = transsplitterwrapDiv.outerWidth() - $textarea.outerWidth();
+				$textarea.outerWidth(textareaOriginalWidth - addedWidth);
 			}
 			
 			/* Keep informations for each line */
@@ -234,10 +239,10 @@
 			scrolledlinesDiv.prepend(elem);
 			
 			/* Event: text changes */
-			var textareaLineHeight = parseInt(textarea.css("lineHeight"), 10);
-			textarea.on("change keyup", function(e) {
+			var textareaLineHeight = parseInt($textarea.css("lineHeight"), 10);
+			$textarea.on("change.transcriptSplitter keyup.transcriptSplitter", function(e) {
 				//var start = Date.now();
-				var text = textarea.val();
+				var text = $textarea.val();
 				
 				var which = e.which;
 				if(e.type === "keyup" && which === 8 || which === 13 || which === 46) {	// Backspace || Return || Delete
@@ -269,7 +274,7 @@
 			
 			/*  */
 			var checkLinePos = function() {
-					var linePos = findCaretInLine(ta, textarea.val());
+					var linePos = findCaretInLine(ta, $textarea.val());
 					if(linePos > maxLength) linePosDiv.addClass("error");
 					else linePosDiv.removeClass("error");
 					linePosDiv.text(linePos + "/" + maxLength);
@@ -283,12 +288,12 @@
 						checkLinePos();
 					}
 				};
-			textarea.on("keydown click", function(e) {
+			$textarea.on("keydown.transcriptSplitter click.transcriptSplitter", function(e) {
 				setTimeout(checkLinePos);
-			}).on("mousedown", function(e) {
-				textarea.on("mousemove", findLinePos_mousemove);
-			}).on("mouseup", function(e) {
-				textarea.off("mousemove", findLinePos_mousemove);
+			}).on("mousedown.transcriptSplitter", function(e) {
+				$textarea.on("mousemove.transcriptSplitter", findLinePos_mousemove);
+			}).on("mouseup.transcriptSplitter", function(e) {
+				$textarea.off("mousemove.transcriptSplitter", findLinePos_mousemove);
 				lastSelectionStart = -1;
 				lastSelectionEnd = -1;
 			});
@@ -297,7 +302,7 @@
 			/* Event scroll: make lineinfos and backgrounds scroll in sync */
 			var lastScrollTop = 0,
 				lastScrollLeft = 0;
-			textarea.on("scroll", function(e) {
+			$textarea.on("scroll.transcriptSplitter", function(e) {
 				var scrollTop = ta.scrollTop;
 				if(scrollTop !== lastScrollTop) {
 					scrolledlinesDiv[0].style.top = (-this.scrollTop) + "px";
@@ -305,13 +310,13 @@
 				}
 				var scrollLeft = ta.scrollLeft;
 				if(scrollLeft !== lastScrollLeft) {
-					setbgPos(textarea, bgPos, scrollLeft);
+					setbgPos($textarea, bgPos, scrollLeft);
 					lastScrollLeft = scrollLeft;
 				}
 			});
 			
-			setbgPos(textarea, bgPos, ta.scrollLeft);
-			textarea.change();
+			setbgPos($textarea, bgPos, ta.scrollLeft);
+			$textarea.change();
 			checkLinePos();
 	};
 	
@@ -319,6 +324,14 @@
 		// default options
 		options: {
 			keepWidth: true
+		},
+		destroy: function() {
+			var $textarea = this.$textarea;
+			$textarea.off(".transcriptWriter");
+			this.$transsplitterwrapDiv.before($textarea).remove();
+			$textarea.css("backgroundPosition", "");
+			if(this.originalWrap === undefined) $textarea.removeAttr("wrap");
+			else $textarea.attr("wrap", this.originalWrap);
 		}
 	};
 	

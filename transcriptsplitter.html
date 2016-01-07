@@ -13,9 +13,11 @@
 </head>
 <body>
 
-Font: <button id="bFontMonoProp">monospaced &lt;-&gt; proportional</button>,
-action: <button id="bSplitSentences">Split sentences</button>
 
+<div id="transcript-controls-div" class="controls-div">
+	Font: <button id="bFontMonoProp">monospaced &lt;-&gt; proportional</button>,
+	action: <button id="bSplitSentences">Split sentences</button>
+</div>
 <textarea class="transcript" rows="40" cols="130"></textarea>
 
 <div id="homelink"><a href="https://github.com/jlgrall/TranscriptSplitter">Transcript splitter v0.1</a></div>
@@ -25,41 +27,40 @@ action: <button id="bSplitSentences">Split sentences</button>
 <script src="transcriptsplitter.js"></script>
 <script>
 $(function($) {
-	var textarea = $(".transcript").transcriptSplitter({
-			keepWidth: false
-		}).focus();
+	$.fn.transcriptSplitter.prototype.options.keepWidth = false;
+	var $textarea = $(".transcript").transcriptSplitter().focus();
 	
 	
 	var scrolledlinesDiv = $(".transsplitterwrap .scrolledlines"),
-		styledFontElems = $([textarea[0], scrolledlinesDiv[0]]);
+		styledFontElems = $([$textarea[0], scrolledlinesDiv[0]]);
 	$("#bFontMonoProp").click(function(e) {
-		var ta = textarea[0],
+		var ta = $textarea[0],
 			oldScrollPercent = (ta.scrollTop + ta.clientHeight/2) / ta.scrollHeight;
-		if(textarea[0].style.fontFamily) {
+		if($textarea[0].style.fontFamily) {
 			styledFontElems.css("fontSize", "");
 			styledFontElems.css("fontFamily", "");
-			textarea.css("backgroundImage", "");
+			$textarea.css("backgroundImage", "");
 		}
 		else {
-			var oldHeight = textarea.innerHeight();	
+			var oldHeight = $textarea.innerHeight();	
 			styledFontElems.css("fontFamily", "Roboto, arial, sans-serif");
-			var height = textarea.innerHeight(),
-				fontSize = parseInt(textarea.css("fontSize"), 10);
+			var height = $textarea.innerHeight(),
+				fontSize = parseInt($textarea.css("fontSize"), 10);
 			styledFontElems.css("fontSize", fontSize * oldHeight / height);
-			textarea.css("backgroundImage", "none");
+			$textarea.css("backgroundImage", "none");
 		}
 		ta.scrollTop = oldScrollPercent * ta.scrollHeight - ta.clientHeight/2;
 	});
 	
 	
 	$("#bSplitSentences").click(function(e) {
-		var text = textarea.val(),
+		var text = $textarea.val(),
 			// Original: text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
 			newText = text.replace(/(\.|\!|\?)(?: \n?|\n)\n?/g, function(match, p1, offset) {
 				return text.length > offset + match.length ? p1 + "\n\n" : match;
 			});
 		if(newText !== text) {
-			textarea.val(newText).focus().change();
+			$textarea.val(newText).focus().change();
 		}
 	});
 });
