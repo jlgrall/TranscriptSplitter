@@ -4,6 +4,7 @@
 	var Array_slice = Array.prototype.slice;
 	
 	// Inspired by: http://api.jqueryui.com/jQuery.widget/
+	// See also: http://learn.jquery.com/jquery-ui/widget-factory/how-to-use-the-widget-factory/
 	$.gadget = function(gadgetName, Constr) {
 		
 		var gadgetFullName = "gadget-" + gadgetName,
@@ -23,6 +24,7 @@
 						args.unshift(undefined, $elem);
 						// From: http://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible/8843181#8843181
 						// "Equivalent" to: new (Constr.apply(args))
+						// Note: careful, don't recursively call this gadget from constructor, as the instance is not yet stored in the element's data
 						instance = new (Function.prototype.bind.apply(Constr, args));
 						$elem.data(gadgetFullName, instance);
 						var eventData = {gadgetName: gadgetName, instance: instance};

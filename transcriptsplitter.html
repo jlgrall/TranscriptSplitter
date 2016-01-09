@@ -70,6 +70,8 @@ $(function($) {
 		$html = $("html"),
 		$body = $("body");
 	
+	// http://webdesignerwall.com/tutorials/css-elastic-videos
+	// https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
 	var resizeTextarea = window.resizeTextarea = function() {
 			var height = $window.height() - ($html.height() - $textarea.height());
 			$textarea.height(height);

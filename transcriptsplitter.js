@@ -197,7 +197,7 @@
 	var transcriptSplitter = function($textarea, options) {
 			
 			// Get the Options
-			options = this.options = $.extend({}, $.fn.transcriptSplitter.prototype.options, options);
+			options = this.options = $.extend({}, transcriptSplitter.prototype.options, options);
 			
 			this.$textarea = $textarea;
 			this.textarea = $textarea[0];
