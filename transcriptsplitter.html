@@ -6,17 +6,15 @@
 <link href="transcriptsplitter.css" type="text/css" rel="stylesheet" />
 <style>
 	body { font: 14px Helvetica, arial, sans-serif; }
-	a {text-decoration: none; }
+	a, .link {text-decoration: none; }
 	
 	#homelink { position: absolute; top: 1px; right: 1px; }
 </style>
 </head>
 <body>
-
-
 <div id="transcript-controls-div" class="controls-div">
-	Font: <button id="bFontMonoProp">monospaced &lt;-&gt; proportional</button>,
-	action: <button id="bSplitSentences">Split sentences</button>
+	Font: <button class="button-font-kind">monospaced &lt;-&gt; proportional</button>,
+	action: <button class="button-transcript-splitSentences">Split sentences</button>
 </div>
 <textarea class="transcript" rows="40" cols="130"></textarea>
 
@@ -27,13 +25,24 @@
 <script src="transcriptsplitter.js"></script>
 <script>
 $(function($) {
+	
+/***** Init *****/
+	
 	$.fn.transcriptSplitter.prototype.options.keepWidth = false;
-	var $textarea = $(".transcript").transcriptSplitter().focus();
 	
-	
-	var scrolledlinesDiv = $(".transsplitterwrap .scrolledlines"),
+	var $window = $(window),
+		$html = $("html"),
+		$textarea = $(".transcript"),
+		scrolledlinesDiv = $(".transsplitterwrap .scrolledlines"),
 		styledFontElems = $([$textarea[0], scrolledlinesDiv[0]]);
-	$("#bFontMonoProp").click(function(e) {
+	
+	
+/***** Splitter *****/
+	
+	$textarea.transcriptSplitter();
+	
+	
+	$(".button-font-kind").click(function(e) {
 		var ta = $textarea[0],
 			oldScrollPercent = (ta.scrollTop + ta.clientHeight/2) / ta.scrollHeight;
 		if($textarea[0].style.fontFamily) {
@@ -52,8 +61,7 @@ $(function($) {
 		ta.scrollTop = oldScrollPercent * ta.scrollHeight - ta.clientHeight/2;
 	});
 	
-	
-	$("#bSplitSentences").click(function(e) {
+	$(".button-transcript-splitSentences").click(function(e) {
 		var text = $textarea.val(),
 			// Original: text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
 			newText = text.replace(/(\.|\!|\?)(?: \n?|\n)\n?/g, function(match, p1, offset) {
@@ -65,10 +73,7 @@ $(function($) {
 	});
 	
 	
-	var $window = $(window),
-		$document = $(document),
-		$html = $("html"),
-		$body = $("body");
+/***** Page layout *****/
 	
 	// http://webdesignerwall.com/tutorials/css-elastic-videos
 	// https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
@@ -78,6 +83,8 @@ $(function($) {
 		};
 	$window.on("resize", resizeTextarea);
 	resizeTextarea();
+	
+	
 });
 </script>
 </body>
