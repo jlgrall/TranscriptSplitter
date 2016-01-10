@@ -206,28 +206,12 @@
 					default:
 						self.transcriptChanged();
 				}
-			}).blur(function(e) {
-				if(options.focusLock) {
-					var refocus = false;
-					switch($.type(options.focusLock)) {
-						case "boolean": refocus = options.focusLock;
-							break;
-						case "string": refocus = $(e.relatedTarget).is(options.focusLock);
-							break;
-						case "function": refocus = options.focusLock(e);
-							break;
-					}
-					if(refocus) $textarea.focus();
-				}
 			});
-			
-			if(options.focusLock) $textarea.focus();
 		};
 	
 	transcriptWriter.prototype = {
 		// default options
 		options: {
-			focusLock: true,
 			player: undefined,
 		},
 		setPlayer: function(player) {

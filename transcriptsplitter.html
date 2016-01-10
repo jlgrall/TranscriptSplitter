@@ -166,7 +166,7 @@
 	<div id="load-div">
 		<p class="title" id="player-url-input-div">
 			<label for="player-url-input">Load video by URL:</label>
-			<input type="text" id="player-url-input" name="source" value="" />
+			<input type="text" id="player-url-input" class="modal-focus" name="source" value="" />
 		</p>	
 
 		<p class="title">Or just drop video or transcript files on this page to load them</p>
@@ -237,6 +237,7 @@ $(function($) {
 	
 	
 	var $window = $(window),
+		$document = $(document),
 		$html = $("html"),
 		$body = $("body"),
 		$video = $("#video"),
@@ -248,7 +249,11 @@ $(function($) {
 		$openFilesInput = $("#open-files"),
 		$downloadTranscriptButtons = $(".download-transcript");
 	
-	var modal = new VanillaModal();
+	var modal = new VanillaModal({
+			onOpen: function() {
+				$(modal.$.modalContent).find(".modal-focus").focus();
+			},
+		});
 	
 	$.fn.transcriptSplitter.prototype.options.keepWidth = false;
 	
@@ -283,7 +288,6 @@ $(function($) {
 	
 	$textarea.transcriptWriter({
 		player: player,
-		focusLock: ":not(:text, :password, textarea)",
 	}).on("dblclick", function() {
 		$textarea.transcriptWriter("seekToTimestampAtCaret");
 	});
@@ -325,6 +329,7 @@ $(function($) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
 					$textarea.val(e.target.result);
+					$textarea.transcriptWriter("transcriptChanged");
 				};
 				reader.readAsText(file);
 			}
@@ -444,6 +449,19 @@ $(function($) {
 			$textarea.val(newText).focus().change();
 		}
 	});
+	
+	
+/***** Global *****/
+	
+	$document.on("focusout", function(e) {
+		var rel = e.relatedTarget;
+		if(rel == null || !$(rel).is(":text, :password, textarea")) {
+			$textarea.focus();
+		}
+	});
+	$textarea.focus();
+	
+	
 	
 	
 	
