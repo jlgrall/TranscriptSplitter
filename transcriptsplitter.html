@@ -351,10 +351,10 @@ $(function($) {
 	});
 	
 	// Inspired by: http://www.html5rocks.com/en/tutorials/file/dndfiles/
-	$body.on("dragenter", function(e) {
-		e.originalEvent.dataTransfer.dropEffect = "copy"; // Explicitly show this is a copy.
-		return false;
-	}).on("dragover", function(e) {
+	$body.on("dragover", function(e) {
+		if($.inArray('Files', e.originalEvent.dataTransfer.types) !== -1) {
+			e.originalEvent.dataTransfer.dropEffect = "copy"; // Explicitly show this is a copy.
+		}
 		return false;
 	}).on("drop", function(e) {
 		var files = e.originalEvent.dataTransfer.files;
