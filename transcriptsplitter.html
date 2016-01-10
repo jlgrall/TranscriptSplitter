@@ -2,77 +2,165 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Transcript splitter</title>
+<title>Transcript Splitter</title>
 <link href="libs.css" type="text/css" rel="stylesheet" />
 <link href="base.css" type="text/css" rel="stylesheet" />
 <link href="transcriptsplitter.css" type="text/css" rel="stylesheet" />
 <style>
+/***** Layout *****/
+	/* All flexbox autoprefixes made with: http://pleeease.io/play/ */
+	
+	html, body { height: 100%; margin: 0; }
+	body { padding: 4px; box-sizing: border-box; }
+	
+	.menu-wrapper { position: absolute; top: 0; left: 0; z-index: 1; }
+	
+	menu { position: absolute; margin: 0; white-space: nowrap; background: #fff; }
+	menu .menu-opener-wrapper { position: absolute; }
+	menu .menu-opener { position: absolute; overflow: hidden; }
+	
+	body, main, #player-div, #transcript-div { display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex; }
+	body { -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+	main, #transcript-div, .transcript, .transsplitterwrap { -webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1; }
+	
+	#player-div, #transcript-div { padding: 4px; box-sizing: border-box; }
+	
+	#video { min-width: 150px; min-height: 50px; width: auto; height: auto; }
+	.transcript { min-width: 250px; min-height: 150px; box-sizing: border-box; }
+	
+	
+/***** Horizontal Layout *****/
+	
+	body.horiz menu { bottom: 0; left: 0; }
+	body.horiz menu .menu-opener-wrapper { left: 0; bottom: 0; right: 0; }
+	body.horiz menu .menu-opener { left: 0; top: 0; right: 0; }
+	body.horiz menu:hover { top: 0; bottom: auto; }
+	body.horiz menu:hover .menu-opener { height: 0; }
+	
+	body.horiz main { margin-top: 20px; }
+	body.horiz #player-div, body.horiz #transcript-div { -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+	
+	
+/***** Vertical Layout *****/
+	
+	body.vert menu { top: 0; right: 0; }
+	body.vert menu .menu-opener-wrapper { top: 0; right: 0; bottom: 0; }
+	body.vert menu .menu-opener { top: 0; left: 0; bottom: 0; }
+	body.vert menu:hover { left: 0; right: auto; }
+	body.vert menu:hover .menu-opener { width: 0; }
+	
+	body.vert main { margin-left: 40px; }
+	body.vert main { -webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: column; -ms-flex-direction: column; flex-direction: column; }
+	
+	
+/***** Functional *****/
+	
+	body:not(.splitterMode) .onlySplitterMode { display: none; }
+	
+	
+/***** Design *****/
+	
 	body { font: 14px Helvetica, arial, sans-serif; }
 	a, .link {text-decoration: none; }
+	
+	#player-controls-div #playbackRates-div { margin: 4px 0; }
+	input[type="radio"].noradio+label { margin: 0; padding: 4px 6px; font-weight: bold; }
+	input[type="radio"].noradio:checked+label { background: #91FF54; }
+	
+	.transcript { font-size: 1.2em; }
 	
 	#player-url-input { width: 800px; min-width: 50px; }
 	.canPlayProbably { color: green; font-weight: bold; }
 	.canPlayMaybe { color: green; font-weight: bold; }
 	.canPlayNo { color: #c33; text-decoration: line-through; }
 	
-	/*#player-div, #transcript-div { padding: 6px; display: table-cell; vertical-align: top; }*/
-	
-	.controls-div { position: relative; }
-	
-	#video { max-width: 100%; height: auto; min-width: 150px; }
-	
-	#player-controls-div #playbackRates-div { margin: 0; }
-	input[type="radio"].noradio+label { margin: 0; padding: 4px 6px; font-weight: bold; }
-	input[type="radio"].noradio:checked+label { background: #91FF54; }
-	
-	.transcript { width: 600px; height: 350px; font-size: 1.2em; }
-	
-	body:not(.splitterMode) .onlySplitterMode { display: none; }
-	
 	.show-state-saved { color: #5DA634; }
 	.show-state-waiting { color: grey; }
 	
-	#homelink { position: absolute; top: 1px; right: 1px; }
+	
+	
+	#video { width: 450px; }
 </style>
 </head>
-<body>
-<div id="menu-div">
-	<p><a href="#modal-load" rel="modal:open">Load files</a></p>
-	<p><a class="download-transcript" download="transcript.txt" href="data:text/plain;charset=utf-8,...">Save transcript</a></p>
-	<p><a class="button-player-toggle" href="javascript:void(0);">Toggle player</a></p>
-	<p><a class="button-splitter-toggle" href="javascript:void(0);">Splitter mode</a></p>
-	<p><a href="#modal-help" rel="modal:open">Help</a></p>
+<body class="horiz">
+<div class="menu-wrapper">
+	<menu>
+		<div class="menu-opener-wrapper"><div class="menu-opener">Menu</div></div>
+		<p class="title"><a href="https://github.com/jlgrall/TranscriptSplitter">Transcript Splitter v0.2</a></p>
+		<p><a href="#modal-load" rel="modal:open">Load files</a></p>
+		<p><a class="download-transcript" download="transcript.txt" href="data:text/plain;charset=utf-8,...">Save transcript</a></p>
+		<p><a class="button-splitter-toggle" href="javascript:void(0);">Splitter mode</a></p>
+		<p><a class="button-player-toggle" href="javascript:void(0);">Player on/off</a></p>
+		<p><a href="#modal-help" rel="modal:open">Help</a></p>
+	</menu>
 </div>
 
-<div id="player-div">
-	<video id="video" class="video-js" controls preload="auto">
-	</video>
-	<div id="player-controls-div" class="controls-div">
-		<p id="playbackRates-div">Speed:
-			<input type="radio" class="noradio" id="0.5" name="playbackRate" value="0.5" /><label for="0.5">0.5</label>
-			<input type="radio" class="noradio" id="0.75" name="playbackRate" value="0.75" /><label for="0.75">0.75</label>
-			<input type="radio" class="noradio" id="1" name="playbackRate" value="1" checked /><label for="1">1</label>
-			<input type="radio" class="noradio" id="1.25" name="playbackRate" value="1.25" /><label for="1.25">1.25</label>
-			<input type="radio" class="noradio" id="1.5" name="playbackRate" value="1.5" /><label for="1.5">1.5</label>
-			<input type="radio" class="noradio" id="2" name="playbackRate" value="2" /><label for="2">2</label>
-		</p>
-	</div>
-</div>
-
-<div id="transcript-div">
-	<textarea class="transcript"></textarea>
-	<div id="transcript-controls-div" class="controls-div">
-		Insert:
-		<button class="button-insert-bold">&lt;b&gt;</button>
-		<button class="button-insert-italic">&lt;i&gt;</button>
-		<button class="button-insert-underline">&lt;u&gt;</button>
-		<button class="button-insert-timestamp">[Timestamp]</button>
-		<div class="onlySplitterMode">
-			Font: <button class="button-font-kind">monospaced &lt;-&gt; proportional</button>,
-			action: <button class="button-transcript-splitSentences">Split sentences</button>
+<main>
+	
+	<div id="player-div">
+		<video id="video" class="video-js" controls preload="auto">
+		</video>
+		<div id="player-controls-div" class="controls-div">
+			<div id="playbackRates-div" class="control-div">
+				Speed:
+				<input type="radio" class="noradio" id="0.5" name="playbackRate" value="0.5" /><label for="0.5">0.5</label>
+				<input type="radio" class="noradio" id="0.75" name="playbackRate" value="0.75" /><label for="0.75">0.75</label>
+				<input type="radio" class="noradio" id="1" name="playbackRate" value="1" checked /><label for="1">1</label>
+				<input type="radio" class="noradio" id="1.25" name="playbackRate" value="1.25" /><label for="1.25">1.25</label>
+				<input type="radio" class="noradio" id="1.5" name="playbackRate" value="1.5" /><label for="1.5">1.5</label>
+				<input type="radio" class="noradio" id="2" name="playbackRate" value="2" /><label for="2">2</label>
+			</div>
+			<div id="player-sizes-div" class="control-div">
+				Size:
+				<select id="player-size">
+					<optgroup label="Zoom">
+						<option value="0.25x">0.25x</option>
+						<option value="0.5x">0.5x</option>
+						<option value="1x">1x</option>
+						<option value="2x">2x</option>
+					</optgroup>
+					<optgroup label="Width">
+						<option value="150px">150px</option>
+						<option value="300px">300px</option>
+						<option value="450px" selected>450px</option>
+						<option value="600px">600px</option>
+						<option value="750px">750px</option>
+					</optgroup>
+					<optgroup label="Height">
+						<option value="144p">&nbsp;&nbsp;144p</option>
+						<option value="240p">&nbsp;&nbsp;240p</option>
+						<option value="360p">&nbsp;&nbsp;360p</option>
+						<option value="480p">&nbsp;&nbsp;480p</option>
+						<option value="720p">&nbsp;&nbsp;720p</option>
+						<option value="1080p">1080p</option>
+					</optgroup>
+				</select>
+			</div>
 		</div>
 	</div>
-</div>
+
+	<div id="transcript-div">
+		<textarea class="transcript"></textarea>
+		<div id="transcript-controls-div" class="controls-div">
+			<div class="control-div">
+				Insert:
+				<button class="button-insert-bold">&lt;b&gt;</button>
+				<button class="button-insert-italic">&lt;i&gt;</button>
+				<button class="button-insert-underline">&lt;u&gt;</button>
+				<button class="button-insert-timestamp">[Timestamp]</button>
+			</div>
+			<div class="onlySplitterMode control-div">
+				Font: <button class="button-font-kind">monospaced &lt;-&gt; proportional</button>,
+				action: <button class="button-transcript-splitSentences">Split sentences</button>
+			</div>
+		</div>
+	</div>
+	
+</main>
+
+<p>Progress stored in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage" target="_blank">LocalStorage</a> automatically every 30 sec:
+	<span class="show-state-saved show-state">Saved</span><span class="show-state-waiting show-state">...</span>
+</p>
 
 <div id="modal-load" class="modal-hider">
 	<div id="load-div">
@@ -80,13 +168,13 @@
 			<label for="player-url-input">Load video by URL:</label>
 			<input type="text" id="player-url-input" name="source" value="" />
 		</p>	
-	
+
 		<p class="title">Or just drop video or transcript files on this page to load them</p>
-	
+
 		<p class="title">Or <a class="button-open-files" href="javascript:void(0);">choose them from your computer</a>
 			<input type="file" id="open-files" multiple accept="video/*,text/*,.txt,.vtt,.srt,.sub,.sbv,.cap,.smi,.sami,.rt" style="display:none">
 		</p>
-	
+
 		<p class="title"><span class="canPlay-hide">Accepted files, result depends on</span><span class="canPlay-show" style="display: none;">Files accepted by</span> your browser:</p>
 		<!-- MIME and canPlayType() infos:
 			http://www.leanbackplayer.com/test/h5mt.html
@@ -126,12 +214,6 @@
 		</div>
 	</div>
 </div>
-
-<p>Progress stored in <a href="https://developer.mozilla.org/en-US/docs/Web/API/Storage/LocalStorage" target="_blank">LocalStorage</a> automatically every 30 sec:
-	<span class="show-state-saved show-state">Saved</span><span class="show-state-waiting show-state">...</span>
-</p>
-
-<div id="homelink"><a href="https://github.com/jlgrall/TranscriptSplitter">Transcript splitter v0.1</a></div>
 
 <div class="modal">
 	<div class="modal-inner">
@@ -195,7 +277,6 @@ $(function($) {
 	$(".button-player-toggle").on("click", function() {
 		var display = $playerDiv.css("display") === "none" ? "" : "none";
 		$playerDiv.css("display", display);
-		resizeTextarea();
 	});
 	
 /***** Transcript *****/
@@ -309,10 +390,6 @@ $(function($) {
 	// http://webdesignerwall.com/tutorials/css-elastic-videos
 	// https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
 	
-	var resizeTextarea = window.resizeTextarea = function() {
-			var height = $window.height() - ($html.height() - $textarea.height());
-			$textarea.height(height);
-		};
 		
 	var scrolledlinesDiv = undefined,
 		styledFontElems = undefined,
@@ -325,15 +402,12 @@ $(function($) {
 				scrolledlinesDiv = undefined;
 				styledFontElems = undefined;
 				$body.removeClass("splitterMode");
-				$window.off("resize", resizeTextarea);
 			}
 			else {
 				$textarea.transcriptSplitter();
 				scrolledlinesDiv = $(".transsplitterwrap .scrolledlines");
 				styledFontElems = $([$textarea[0], scrolledlinesDiv[0]]);
 				$body.addClass("splitterMode");
-				$window.on("resize", resizeTextarea);
-				resizeTextarea();
 			}
 		};
 	
@@ -371,6 +445,17 @@ $(function($) {
 		}
 	});
 	
+	
+	
+	
+	
+	$("menu").on("click", function(e) {
+		if(e.target != this) return;
+		if($body.hasClass("horiz")) $body.removeClass("horiz").addClass("vert");
+		else $body.removeClass("vert").addClass("horiz");
+	});
+	
+	//toggleSplitterMode();
 	
 });
 </script>

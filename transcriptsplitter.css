@@ -1,7 +1,16 @@
 /* TranscriptSplitter v0.1 - Jean-Louis Grall - MIT License - https://github.com/jlgrall/TranscriptSplitter */
+/* All flexbox autoprefixes made with: http://pleeease.io/play/ */
+
+
+.transsplitterwrap, .textareawrap {
+	display: -webkit-box; display: -webkit-flex; display: -ms-flexbox; display: flex;
+}
+.textareawrap {
+	-webkit-box-flex: 1; -webkit-flex-grow: 1; -ms-flex-positive: 1; flex-grow: 1;
+}
+
 
 .transsplitterwrap {
-	display: table;
 	border: 1px solid #c0c0c0;
 	padding: 4px;
 }
@@ -16,7 +25,6 @@
 
 .lines,
 .textareawrap {
-	display: table-cell;
 	vertical-align: top;
 }
 
