@@ -69,6 +69,9 @@
 				end: end
 			};
 		},
+		// TODO: replace all the selection code with https://developer.mozilla.org/en-US/docs/Web/API/Selection
+		//		 (Also see: https://github.com/timdown/rangyinputs/blob/master/rangyinputs-jquery-src.js)
+		//		 Also see transcriptsplitter.js
 		// Inspired from: https://richonrails.com/articles/text-area-manipulation-with-jquery
 		setInputSelection = function(input, selectionStart, selectionEnd) {
 			if (input.createTextRange) {
