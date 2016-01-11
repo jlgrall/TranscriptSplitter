@@ -340,6 +340,7 @@ $(function($) {
 			else if(isTranscriptFile(file, name, ext, type)) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
+					$downloadTranscriptButtons.prop("download", name);
 					$textarea.val(e.target.result);
 					$textarea.transcriptWriter("transcriptChanged");
 				};
