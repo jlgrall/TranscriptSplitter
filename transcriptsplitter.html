@@ -279,7 +279,7 @@ $(function($) {
 		}
 	});
 	
-	$(".button-player-toggle").on("click", function() {
+	$document.on("click", ".button-player-toggle", function() {
 		var display = $playerDiv.css("display") === "none" ? "" : "none";
 		$playerDiv.css("display", display);
 	});
@@ -292,16 +292,16 @@ $(function($) {
 		$textarea.transcriptWriter("seekToTimestampAtCaret");
 	});
 	
-	$(".button-insert-bold").on("click", function() {
+	$document.on("click", ".button-insert-bold", function() {
 		$textarea.transcriptWriter("toggleWrapSelectionWithTag", "b");
 	});
-	$(".button-insert-italic").on("click", function() {
+	$document.on("click", ".button-insert-italic", function() {
 		$textarea.transcriptWriter("toggleWrapSelectionWithTag", "i");
 	});
-	$(".button-insert-underline").on("click", function() {
+	$document.on("click", ".button-insert-underline", function() {
 		$textarea.transcriptWriter("toggleWrapSelectionWithTag", "u");
 	});
-	$(".button-insert-timestamp").on("click", function() {
+	$document.on("click", ".button-insert-timestamp", function() {
 		$textarea.transcriptWriter("insertTimestampAtSelection");
 	});
 	
@@ -343,7 +343,7 @@ $(function($) {
 		}
 	});
 	
-	$(".button-open-files").on("click", function() {
+	$document.on("click", ".button-open-files", function() {
 		$openFilesInput.click();
 	});
 	$openFilesInput.on("change", function() {
@@ -416,7 +416,7 @@ $(function($) {
 			}
 		};
 	
-	$(".button-splitter-toggle").on("click", toggleSplitterMode);
+	$document.on("click", ".button-splitter-toggle", toggleSplitterMode);
 	
 	$(".button-font-kind").click(function(e) {
 		if(!isSplitterMode()) return;
