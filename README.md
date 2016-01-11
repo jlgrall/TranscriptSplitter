@@ -5,13 +5,13 @@ Online webapp to transcribe videos. Makes it easy to subtitle or write captions 
 
 You can drag a video from your computer to the webapp, and start writing your transcript. Keyboard shortcuts allows you to pause and skip back (rewind). When you are finished, just save your transcript.
 
-Splitter mode: use this mode to visually cut the lines at a maximum line width.
+**Splitter mode:** use this mode to visually cut the lines at a maximum line width.
+
+**Compatibility:** recent browsers and IE10+. (Older browsers may have a degraded experience)
 
 It works locally, no data is sent online.
 
-Compatible with recent browsers and IE10+. (Older browsers may have a degraded experience)
-
-**Online demo:** [Transcript Splitter](http://jlgrall.github.io/TranscriptSplitter/transcriptsplitter.html)
+**Try: [Transcript Splitter online](http://jlgrall.github.io/TranscriptSplitter/transcriptsplitter.html)**
 
 Published under the free MIT license.
 
