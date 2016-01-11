@@ -80,6 +80,7 @@
 	
 	
 	#video { width: 450px; }
+	#player-sizes-div { text-decoration: line-through; opacity: .6; }
 </style>
 </head>
 <body class="horiz">
@@ -103,16 +104,16 @@
 		<div id="player-controls-div" class="controls-div">
 			<div id="playbackRates-div" class="control-div">
 				Speed:
-				<input type="radio" class="noradio" id="0.5" name="playbackRate" value="0.5" /><label for="0.5">0.5</label>
-				<input type="radio" class="noradio" id="0.75" name="playbackRate" value="0.75" /><label for="0.75">0.75</label>
-				<input type="radio" class="noradio" id="1" name="playbackRate" value="1" checked /><label for="1">1</label>
-				<input type="radio" class="noradio" id="1.25" name="playbackRate" value="1.25" /><label for="1.25">1.25</label>
-				<input type="radio" class="noradio" id="1.5" name="playbackRate" value="1.5" /><label for="1.5">1.5</label>
-				<input type="radio" class="noradio" id="2" name="playbackRate" value="2" /><label for="2">2</label>
+				<input type="radio" class="noradio storeState" id="0.5" name="playbackRate" value="0.5" /><label for="0.5">0.5</label>
+				<input type="radio" class="noradio storeState" id="0.75" name="playbackRate" value="0.75" /><label for="0.75">0.75</label>
+				<input type="radio" class="noradio storeState" id="1" name="playbackRate" value="1" checked /><label for="1">1</label>
+				<input type="radio" class="noradio storeState" id="1.25" name="playbackRate" value="1.25" /><label for="1.25">1.25</label>
+				<input type="radio" class="noradio storeState" id="1.5" name="playbackRate" value="1.5" /><label for="1.5">1.5</label>
+				<input type="radio" class="noradio storeState" id="2" name="playbackRate" value="2" /><label for="2">2</label>
 			</div>
 			<div id="player-sizes-div" class="control-div">
 				Size:
-				<select id="player-size">
+				<select id="player-size" class="storeState">
 					<optgroup label="Zoom">
 						<option value="0.25x">0.25x</option>
 						<option value="0.5x">0.5x</option>
