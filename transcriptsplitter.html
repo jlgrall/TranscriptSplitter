@@ -458,7 +458,8 @@ $(function($) {
 	
 	$document.on("focusout", function(e) {
 		var rel = e.relatedTarget;
-		if(rel == null || !$(rel).is(":text, :password, textarea")) {
+		if(rel === undefined) return;	// FIX: e.relatedTarget is unimplemented in some older browser
+		if(rel === null || !$(rel).is(":text, :password, textarea")) {
 			$textarea.focus();
 		}
 	});
