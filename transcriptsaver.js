@@ -109,7 +109,13 @@
 				var currentTime = this.options.store.get("state.currentTime");
 				if(currentTime !== null) {
 					this.lastCurrentTime = currentTime;
-					if(this.playerGadget) this.playerGadget.player.currentTime = currentTime;
+					
+					// FIX: FF throws after the player is reloaded with a new source !?!?
+					// Error message: InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable
+					// So I put a try-catch here:
+					try {
+						if(this.playerGadget) this.playerGadget.player.currentTime = currentTime;
+					} catch(e) {}
 				}
 			
 				if(transcript !== null || currentTime !== null) {
