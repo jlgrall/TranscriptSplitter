@@ -64,8 +64,8 @@
 	a, .link {text-decoration: none; }
 	
 	#player-controls-div #playbackRates-div { margin: 4px 0; }
-	input[type="radio"].noradio+label { margin: 0; padding: 4px 6px; font-weight: bold; }
-	input[type="radio"].noradio:checked+label { background: #91FF54; }
+	input[type="radio"].noinput + label { margin: 0; padding: 4px 6px; font-weight: bold; }
+	input[type="radio"].noinput:checked + label { background: #91FF54; }
 	
 	.transcript { font-size: 1.2em; }
 	
@@ -90,8 +90,8 @@
 		<p class="title"><a href="https://github.com/jlgrall/TranscriptSplitter">Transcript Splitter v0.2</a></p>
 		<p><a href="#modal-load" rel="modal:open">Load files</a></p>
 		<p><a class="download-transcript" download="transcript.txt" href="data:text/plain;charset=utf-8,...">Save transcript</a></p>
-		<p><a class="button-splitter-toggle" href="javascript:void(0);">Splitter mode</a></p>
-		<p><a class="button-player-toggle" href="javascript:void(0);">Player on/off</a></p>
+		<p><a href="javascript:void(0);"><input type="checkbox" id="button-splitter-toggle" class="storeState noinput" /><label for="button-splitter-toggle">Splitter mode</label></a></p>
+		<p><a href="javascript:void(0);"><input type="checkbox" id="button-player-toggle" class="storeState noinput" checked /><label for="button-player-toggle" class="onlyInputUnchecked">Show Player</label><label for="button-player-toggle" class="onlyInputChecked">Hide Player</label></a></p>
 		<p><a href="#modal-help" rel="modal:open">Help</a></p>
 	</menu>
 </div>
@@ -104,12 +104,12 @@
 		<div id="player-controls-div" class="controls-div">
 			<div id="playbackRates-div" class="control-div">
 				Speed:
-				<input type="radio" class="noradio storeState" id="0.5" name="playbackRate" value="0.5" /><label for="0.5">0.5</label>
-				<input type="radio" class="noradio storeState" id="0.75" name="playbackRate" value="0.75" /><label for="0.75">0.75</label>
-				<input type="radio" class="noradio storeState" id="1" name="playbackRate" value="1" checked /><label for="1">1</label>
-				<input type="radio" class="noradio storeState" id="1.25" name="playbackRate" value="1.25" /><label for="1.25">1.25</label>
-				<input type="radio" class="noradio storeState" id="1.5" name="playbackRate" value="1.5" /><label for="1.5">1.5</label>
-				<input type="radio" class="noradio storeState" id="2" name="playbackRate" value="2" /><label for="2">2</label>
+				<input type="radio" class="noinput storeState" id="0.5" name="playbackRate" value="0.5" /><label for="0.5">0.5</label>
+				<input type="radio" class="noinput storeState" id="0.75" name="playbackRate" value="0.75" /><label for="0.75">0.75</label>
+				<input type="radio" class="noinput storeState" id="1" name="playbackRate" value="1" checked /><label for="1">1</label>
+				<input type="radio" class="noinput storeState" id="1.25" name="playbackRate" value="1.25" /><label for="1.25">1.25</label>
+				<input type="radio" class="noinput storeState" id="1.5" name="playbackRate" value="1.5" /><label for="1.5">1.5</label>
+				<input type="radio" class="noinput storeState" id="2" name="playbackRate" value="2" /><label for="2">2</label>
 			</div>
 			<div id="player-sizes-div" class="control-div">
 				Size:
@@ -241,6 +241,8 @@ $(function($) {
 		$document = $(document),
 		$html = $("html"),
 		$body = $("body"),
+		$buttonSplitterToggle = $("#button-splitter-toggle"),
+		$buttonPlayerToggle = $("#button-player-toggle"),
 		$video = $("#video"),
 		$playerDiv = $("#player-div"),
 		player,
@@ -266,6 +268,11 @@ $(function($) {
 		$transcriptVideo: $video,
 	}).transcriptPlayer("getPlayer");
 	
+	$buttonPlayerToggle.on("change", function() {
+		var display = $buttonPlayerToggle.is(":checked") ? "" : "none";
+		$playerDiv.css("display", display);
+	});
+	
 	$playerDiv.on("playbackRateChanged", function(e, data) {
 		var playbackRate = data.playbackRate,
 			$playbackRate = $playbackRates.filter("[value='" + playbackRate + "']");
@@ -280,10 +287,6 @@ $(function($) {
 		}
 	});
 	
-	$document.on("click", ".button-player-toggle", function() {
-		var display = $playerDiv.css("display") === "none" ? "" : "none";
-		$playerDiv.css("display", display);
-	});
 	
 /***** Transcript *****/
 	
@@ -400,24 +403,23 @@ $(function($) {
 	var scrolledlinesDiv = undefined,
 		styledFontElems = undefined,
 		isSplitterMode = function() {
-			return !!$textarea.data("gadget-transcriptSplitter");
-		},
-		toggleSplitterMode = function() {
-			if(isSplitterMode()) {
-				$textarea.transcriptSplitter("destroy");
-				scrolledlinesDiv = undefined;
-				styledFontElems = undefined;
-				$body.removeClass("splitterMode");
-			}
-			else {
-				$textarea.transcriptSplitter();
-				scrolledlinesDiv = $(".transsplitterwrap .scrolledlines");
-				styledFontElems = $([$textarea[0], scrolledlinesDiv[0]]);
-				$body.addClass("splitterMode");
-			}
+			return $buttonSplitterToggle.is(":checked");
 		};
 	
-	$document.on("click", ".button-splitter-toggle", toggleSplitterMode);
+	$buttonSplitterToggle.on("change", function() {
+		if($buttonSplitterToggle.is(":checked")) {
+			$textarea.transcriptSplitter();
+			scrolledlinesDiv = $(".transsplitterwrap .scrolledlines");
+			styledFontElems = $([$textarea[0], scrolledlinesDiv[0]]);
+			$body.addClass("splitterMode");
+		}
+		else {
+			$textarea.transcriptSplitter("destroy");
+			scrolledlinesDiv = undefined;
+			styledFontElems = undefined;
+			$body.removeClass("splitterMode");
+		}
+	});
 	
 	$(".button-font-kind").click(function(e) {
 		if(!isSplitterMode()) return;
@@ -474,7 +476,6 @@ $(function($) {
 		else $body.removeClass("vert").addClass("horiz");
 	});
 	
-	//toggleSplitterMode();
 	
 });
 </script>
