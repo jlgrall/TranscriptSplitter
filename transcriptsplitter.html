@@ -76,11 +76,6 @@
 	
 	.show-state-saved { color: #5DA634; }
 	.show-state-waiting { color: grey; }
-	
-	
-	
-	#video { width: 450px; }
-	#player-sizes-div { text-decoration: line-through; opacity: .6; }
 </style>
 </head>
 <body class="horiz">
@@ -99,7 +94,7 @@
 <main>
 	
 	<div id="player-div">
-		<video id="video" class="video-js" controls preload="auto">
+		<video id="video" class="video-js" controls preload="auto" style="width: 450px;">
 		</video>
 		<div id="player-controls-div" class="controls-div">
 			<div id="playbackRates-div" class="control-div">
@@ -113,27 +108,27 @@
 			</div>
 			<div id="player-sizes-div" class="control-div">
 				Size:
-				<select id="player-size" class="storeState">
+				<select id="select-player-size" class="player-size storeState">
 					<optgroup label="Zoom">
-						<option value="0.25x">0.25x</option>
-						<option value="0.5x">0.5x</option>
-						<option value="1x">1x</option>
-						<option value="2x">2x</option>
+						<option value="zoom:0.25" disabled>0.25x</option>
+						<option value="zoom:0.5" disabled>0.5x</option>
+						<option value="zoom:1" disabled>1x</option>
+						<option value="zoom:2" disabled>2x</option>
 					</optgroup>
 					<optgroup label="Width">
-						<option value="150px">150px</option>
-						<option value="300px">300px</option>
-						<option value="450px" selected>450px</option>
-						<option value="600px">600px</option>
-						<option value="750px">750px</option>
+						<option value="width:150">150px</option>
+						<option value="width:300">300px</option>
+						<option value="width:450" selected>450px</option>
+						<option value="width:600">600px</option>
+						<option value="width:750">750px</option>
 					</optgroup>
 					<optgroup label="Height">
-						<option value="144p">&nbsp;&nbsp;144p</option>
-						<option value="240p">&nbsp;&nbsp;240p</option>
-						<option value="360p">&nbsp;&nbsp;360p</option>
-						<option value="480p">&nbsp;&nbsp;480p</option>
-						<option value="720p">&nbsp;&nbsp;720p</option>
-						<option value="1080p">1080p</option>
+						<option value="height:144">&nbsp;&nbsp;144p</option>
+						<option value="height:240">&nbsp;&nbsp;240p</option>
+						<option value="height:360">&nbsp;&nbsp;360p</option>
+						<option value="height:480">&nbsp;&nbsp;480p</option>
+						<option value="height:720">&nbsp;&nbsp;720p</option>
+						<option value="height:1080">1080p</option>
 					</optgroup>
 				</select>
 			</div>
@@ -285,6 +280,19 @@ $(function($) {
 		if(!isNaN(playbackRate) && playbackRate != player.playbackRate) {
 			$playerDiv.transcriptPlayer("playbackRate", playbackRate);
 		}
+	});
+	
+	$document.on("change", ".player-size", function(e) {
+		var split = $(e.target).val().split(":"),
+			param = split[0],
+			val = split[1];
+		if(param === "width") {
+			$video.css({width: val + "px", height: ""});
+		}
+		else if(param === "height") {
+			$video.css({width: "", height: val + "px"});
+		}
+		
 	});
 	
 	
