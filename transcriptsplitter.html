@@ -90,8 +90,8 @@
 		<p class="title"><a href="https://github.com/jlgrall/TranscriptSplitter">Transcript Splitter v0.2</a></p>
 		<p><a href="#modal-load" rel="modal:open">Load files</a></p>
 		<p><a class="download-transcript" download="transcript.txt" href="data:text/plain;charset=utf-8,...">Save transcript</a></p>
-		<p><a href="javascript:void(0);"><input type="checkbox" id="button-splitter-toggle" class="storeState noinput" /><label for="button-splitter-toggle">Splitter mode</label></a></p>
-		<p><a href="javascript:void(0);"><input type="checkbox" id="button-player-toggle" class="storeState noinput" checked /><label for="button-player-toggle" class="onlyInputUnchecked">Show Player</label><label for="button-player-toggle" class="onlyInputChecked">Hide Player</label></a></p>
+		<p><a href="javascript:void(0);"><input type="checkbox" id="button-splitter-mode" class="storeState noinput" /><label for="button-splitter-mode">Splitter mode</label></a></p>
+		<p><a href="javascript:void(0);"><input type="checkbox" id="button-player-hide" class="storeState noinput" /><label for="button-player-hide" class="onlyInputUnchecked">Hide Player</label><label for="button-player-hide" class="onlyInputChecked">Show Player</label></a></p>
 		<p><a href="#modal-help" rel="modal:open">Help</a></p>
 	</menu>
 </div>
@@ -241,8 +241,8 @@ $(function($) {
 		$document = $(document),
 		$html = $("html"),
 		$body = $("body"),
-		$buttonSplitterToggle = $("#button-splitter-toggle"),
-		$buttonPlayerToggle = $("#button-player-toggle"),
+		$buttonSplitterMode = $("#button-splitter-mode"),
+		$buttonPlayerHide = $("#button-player-hide"),
 		$video = $("#video"),
 		$playerDiv = $("#player-div"),
 		player,
@@ -268,8 +268,8 @@ $(function($) {
 		$transcriptVideo: $video,
 	}).transcriptPlayer("getPlayer");
 	
-	$buttonPlayerToggle.on("change", function() {
-		var display = $buttonPlayerToggle.is(":checked") ? "" : "none";
+	$buttonPlayerHide.on("change", function() {
+		var display = $buttonPlayerHide.is(":checked") ? "none" : "";
 		$playerDiv.css("display", display);
 	});
 	
@@ -403,11 +403,11 @@ $(function($) {
 	var scrolledlinesDiv = undefined,
 		styledFontElems = undefined,
 		isSplitterMode = function() {
-			return $buttonSplitterToggle.is(":checked");
+			return $buttonSplitterMode.is(":checked");
 		};
 	
-	$buttonSplitterToggle.on("change", function() {
-		if($buttonSplitterToggle.is(":checked")) {
+	$buttonSplitterMode.on("change", function() {
+		if($buttonSplitterMode.is(":checked")) {
 			$textarea.transcriptSplitter();
 			scrolledlinesDiv = $(".transsplitterwrap .scrolledlines");
 			styledFontElems = $([$textarea[0], scrolledlinesDiv[0]]);
