@@ -115,7 +115,7 @@
 					// So I put a try-catch here:
 					try {
 						if(this.playerGadget) this.playerGadget.player.currentTime = currentTime;
-					} catch(e) {}
+					} catch(e) { console.error("Caught error: InvalidStateError while setting: player.currentTime"); }
 				}
 			
 				if(transcript !== null || currentTime !== null) {
