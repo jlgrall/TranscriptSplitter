@@ -10,7 +10,7 @@
 			this.$element = $element;
 			this.element = $element[0];
 			
-			this.videoGadget = undefined;
+			this.playerGadget = undefined;
 			this.writerGadget = undefined;
 			
 			this.lastTranscript = "";
@@ -22,7 +22,7 @@
 			this.debounceSaveProgressBound = this.debounceSaveProgress.bind(this);
 			
 			this.onTranscriptChanged = function() {
-				if(this.videoGadget) this.lastCurrentTime = this.videoGadget.player.currentTime;
+				if(this.playerGadget) this.lastCurrentTime = this.playerGadget.player.currentTime;
 				this.lastTranscriptChange = Date.now();
 				//console.log("Transcript changed");
 				if(this.debounceTimeout === -1) this.debounceSaveProgress();
@@ -38,7 +38,7 @@
 			
 			$(window).on("unload.transcriptSaver", this.onunload);
 			
-			this.setTranscriptVideo(options.$transcriptVideo);
+			this.setTranscriptPlayer(options.$transcriptPlayer);
 			this.setTranscriptWriter(options.$transcriptWriter);
 		};
 	
@@ -49,16 +49,16 @@
 			maxDebounce: 30 * 1000,
 			store: window.store.namespace("Transcript"),	// Namespace the store
 			$playerURLInput: undefined,
-			$transcriptVideo: undefined,
+			$transcriptPlayer: undefined,
 			$transcriptWriter: undefined,
 		},
-		setTranscriptVideo: function($transcriptVideo) {
+		setTranscriptPlayer: function($transcriptPlayer) {
 			var options = this.options;
-			if(this.videoGadget) options.$transcriptVideo.off(".transcriptSaver");
-			options.$transcriptVideo = $transcriptVideo;
-			this.videoGadget = $transcriptVideo ? options.$transcriptVideo.data("gadget-transcriptVideo") : undefined;
+			if(this.playerGadget) options.$transcriptPlayer.off(".transcriptSaver");
+			options.$transcriptPlayer = $transcriptPlayer;
+			this.playerGadget = $transcriptPlayer ? options.$transcriptPlayer.data("gadget-transcriptPlayer") : undefined;
 			
-			if(this.videoGadget) $transcriptVideo.on("playbackRateChanged", this.onPlaybackRateChanged);
+			if(this.playerGadget) $transcriptPlayer.on("playbackRateChanged", this.onPlaybackRateChanged);
 		},
 		setTranscriptWriter: function($transcriptWriter) {
 			var options = this.options;
@@ -107,7 +107,7 @@
 				var currentTime = this.options.store.get("state.currentTime");
 				if(currentTime !== null) {
 					this.lastCurrentTime = currentTime;
-					if(this.videoGadget) this.videoGadget.player.currentTime = currentTime;
+					if(this.playerGadget) this.playerGadget.player.currentTime = currentTime;
 				}
 			
 				if(transcript !== null || currentTime !== null) {
@@ -117,28 +117,28 @@
 			}
 		},
 		savePlaybackRate: function() {
-			if(this.videoGadget) {
-				this.options.store.set("state.playbackRate", this.videoGadget.playbackRate());
+			if(this.playerGadget) {
+				this.options.store.set("state.playbackRate", this.playerGadget.playbackRate());
 				this.$element.trigger("playbackRateSaved");
 			}
 		},
 		loadPlaybackRate: function() {
-			if(this.videoGadget) {
+			if(this.playerGadget) {
 				var playbackRate = parseFloat(this.options.store.get("state.playbackRate"));
 				if(!isNaN(playbackRate)) {
-					this.videoGadget.playbackRate(playbackRate);
+					this.playerGadget.playbackRate(playbackRate);
 					this.$element.trigger("playbackRateLoaded");
 				}
 			}
 		},
-		saveVideoSource: function() {
+		savePlayerSource: function() {
 			this.options.store.set("state.playerURLInput", this.options.$playerURLInput.val());
 		},
-		loadVideoSource: function() {
+		loadPlayerSource: function() {
 			var source = this.options.store.get("state.playerURLInput");
 			if(source !== null) {
 				this.options.$playerURLInput.val(source);
-				if(!this.videoGadget.player.currentSrc) {
+				if(!this.playerGadget.player.currentSrc) {
 					// http://api.jquery.com/category/events/event-object/
 					var e = $.Event("keydown", {which: 13});	// Enter key
 					this.options.$playerURLInput.trigger(e);
@@ -146,18 +146,18 @@
 			}
 		},
 		saveAll: function() {
-			this.saveVideoSource();
+			this.savePlayerSource();
 			this.saveProgress();
 			this.savePlaybackRate();
 		},
 		loadAll: function() {
-			this.loadVideoSource();
+			this.loadPlayerSource();
 			this.loadProgress();
 			this.loadPlaybackRate();
 		},
 		destroy: function() {
 			$(window).off("unload", this.onunload);
-			if(this.videoGadget)  this.options.$transcriptVideo.off(".transcriptSaver");
+			if(this.playerGadget)  this.options.$transcriptPlayer.off(".transcriptSaver");
 			if(this.writerGadget) this.options.$transcriptWriter.off(".transcriptSaver");
 			this.$element.off(".transcriptSaver");
 		}

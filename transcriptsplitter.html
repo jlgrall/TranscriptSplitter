@@ -339,7 +339,7 @@ $(function($) {
 		if(e.which === 13) {
 			var src = $playerURLInput.val().trim();
 			$playerDiv.transcriptPlayer("setSrc", src);
-			$body.transcriptSaver("saveVideoSource");
+			$body.transcriptSaver("savePlayerSource");
 		}
 	});
 	
@@ -376,7 +376,7 @@ $(function($) {
 	
 	$body.transcriptSaver({
 		$playerURLInput: $playerURLInput,
-		$transcriptVideo: $video,
+		$transcriptPlayer: $playerDiv,
 		$transcriptWriter: $textarea,
 	}).transcriptSaver("loadAll");
 	
