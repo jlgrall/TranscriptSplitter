@@ -9,12 +9,3 @@ input:checked ~ label.onlyInputUnchecked { display: none; }
 
 html:not(.transcript-state-saved) .show-state-saved,
 html:not(.transcript-state-waiting) .show-state-waiting { display: none; }
-
-
-/***** VanillaModal *****/
-
-.vanilla-modal .modal { font-size: 1em; }	/* Why did they set this to 0 ??? */
-a[rel="modal:close"] { width: auto; height: auto; line-height: normal; }	/* Why did they set this ??? */
-
-a[rel="modal:close"] { padding: 3px; }
-.modal-content { padding: 5px; }

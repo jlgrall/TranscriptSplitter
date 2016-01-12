@@ -6,7 +6,6 @@ Version: 1.2.6
 Extracted from the demo page: http://thephuse.github.io/vanilla-modal/css.css
 Compressed with: http://csscompressor.com/
 */
-body.vanilla-modal .modal-hider{position:absolute;left:-99999em}
 .modal{display:none}
 .vanilla-modal .modal{display:block;position:fixed;content:"";top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:-1;opacity:0;font-size:0;transition:opacity 0.2s,z-index 0 .2s;text-align:center;overflow:hidden;overflow-y:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
 .vanilla-modal .modal > *{display:inline-block;white-space:normal;vertical-align:middle;text-align:left}
@@ -15,3 +14,16 @@ body.vanilla-modal .modal-hider{position:absolute;left:-99999em}
 .modal-inner{position:relative;overflow:hidden;max-width:90%;max-height:90%;overflow-x:hidden;overflow-y:auto;background:#fff;z-index:-1;opacity:0;transform:scale(0);transition:opacity 0.2s,transform 0.2s,z-index 0 .2s}
 .modal-visible .modal-inner{z-index:100;opacity:1;transform:scale(1);transition:opacity 0.2s,transform .2s}
 a[rel="modal:close"]{position:absolute;z-index:2;right:0;top:0;width:25px;height:25px;line-height:25px;font-size:13px;cursor:pointer;text-align:center;background:#fff;box-shadow:-1px 1px 2px rgba(0,0,0,0.2)}
+
+
+/***** VanillaModal fixing default rules: *****/
+
+/* From: README.md in https://github.com/thephuse/vanilla-modal */
+body.vanilla-modal .modal-hider { position:absolute; top:-99999em; left:-99999em; }
+
+.vanilla-modal .modal { font-size: 1em; }	/* Why did they set this to 0 ??? */
+a[rel="modal:close"] { width: auto; height: auto; line-height: normal; }	/* Why did they set this ??? */
+
+/* More sound default paddings: */
+a[rel="modal:close"] { padding: 3px; }
+.modal-content { padding: 5px; }
