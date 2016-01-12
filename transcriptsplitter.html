@@ -303,7 +303,7 @@ $(function($) {
 	$textarea.transcriptWriter({
 		player: player,
 	}).on("dblclick", function() {
-		$textarea.transcriptWriter("seekToTimestampAtCaret");
+		$textarea.transcriptWriter("seekToTimestampAtCaret", true);
 	});
 	
 	$document.on("click", ".button-insert-bold", function() {

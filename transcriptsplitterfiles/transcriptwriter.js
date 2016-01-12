@@ -126,9 +126,9 @@
 		},
 		timestamp2CurrentTime = function(timestamp) {
 			var currentTime = 0.0,
-				parts = timestamp.split(":"),
+				parts = timestamp.split(/[\:\.\,]/),
 				secs = parts.pop();
-			if(secs.length > 2 && parts.length) {	// If the last number has 3 digits or more, it is a milliseconds count (except if there are no seconds specified)
+			if(secs.length > 2 && parts.length) {	// If the last number has 3 digits or more, it is a milliseconds count (except if it is the only part)
 				currentTime += parseFloat("0." + secs, 10);
 				secs = parts.pop();
 			}
@@ -142,6 +142,31 @@
 				}
 			}
 			return currentTime;
+		},
+		isTimestampChar = function(text, pos, onlyDigits) {
+			switch(text.charAt(pos)) {
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					return true;
+				case ':':
+					return !onlyDigits;
+				case '.':
+				case ',':
+						// if a '.' or a ',' is preceded by milliseconds (3 digits), it is not part of a timestamp.
+						return !onlyDigits && (!isTimestampChar(text, pos - 1, true)
+											|| !isTimestampChar(text, pos - 2, true)
+											|| !isTimestampChar(text, pos - 3, true));
+				default:
+					return false;
+			}
 		};
 	
 	var transcriptWriter = function($textarea, options) {
@@ -238,17 +263,21 @@
 				this.transcriptChanged();
 			}
 		},
-		seekToTimestampAtCaret: function(prefix, suffix) {
+		_findTimestampAroundPos: function(text, pos) {
+			var start = pos,
+				end = pos - 1;
+			while(isTimestampChar(text, start - 1)) start--;
+			while(isTimestampChar(text, end + 1)) end++;
+			return start < end ? {start: start, end: end, timestamp: text.substring(start, end + 1)} : undefined;
+		},
+		seekToTimestampAtCaret: function(select) {
 			if(this.options.player) {
-				if(!prefix) prefix = "[";
-				if(!suffix) suffix = "]";
 				var text = this.$textarea.val(),
 					at = getInputSelection(this.textarea).start,
-					start = text.lastIndexOf(prefix, at),
-					end = text.indexOf(suffix, start + 1);
-				if(start !== -1 && end !== -1 && end >= at) {
-					var timestamp = text.substring(start + 1, end);
-					this.options.player.currentTime = timestamp2CurrentTime(timestamp);
+					res = this._findTimestampAroundPos(text, at);
+				if(res) {
+					this.options.player.currentTime = timestamp2CurrentTime(res.timestamp);
+					if(select) setInputSelection(this.textarea, res.start, res.end + 1);
 				}
 			}
 		},
