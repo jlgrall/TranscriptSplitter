@@ -132,9 +132,7 @@
 			if(source !== null) {
 				this.options.$playerURLInput.val(source);
 				if(!this.playerGadget.player.currentSrc) {
-					// http://api.jquery.com/category/events/event-object/
-					var e = $.Event("keydown", {which: 13});	// Enter key
-					this.options.$playerURLInput.trigger(e);
+					this.options.$playerURLInput.change();
 				}
 			}
 		},

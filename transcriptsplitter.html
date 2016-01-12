@@ -165,7 +165,7 @@
 			<input type="text" id="player-url-input" class="modal-focus" name="source" value="" />
 		</p>	
 
-		<p class="title">Or just drop video or transcript files on this page to load them</p>
+		<p class="title">Or just drop video and transcript files on this page to load them</p>
 
 		<p class="title">Or <a class="button-open-files" href="javascript:void(0);">choose them from your computer</a>
 			<input type="file" id="open-files" multiple accept="video/*,text/*,.txt,.vtt,.srt,.sub,.sbv,.cap,.smi,.sami,.rt" style="display:none">
@@ -350,8 +350,11 @@ $(function($) {
 			}
 		};
 	
-	$playerURLInput.on("keydown", function(e) {
-		if(e.which === 13) {
+	$playerURLInput.on("change", function(e) {
+		var lastVal = $playerURLInput.data("lastVal"),
+			val = $playerURLInput.val();
+		if(val !== lastVal) {
+			$playerURLInput.data("lastVal", val);
 			var src = $playerURLInput.val().trim();
 			$playerDiv.transcriptPlayer("setSrc", src);
 			$body.transcriptSaver("savePlayerSource");
@@ -467,13 +470,31 @@ $(function($) {
 	
 /***** Global *****/
 	
-	$document.on("focusout", function(e) {
-		var rel = e.relatedTarget;
-		if(rel === undefined) return;	// FIX: e.relatedTarget is unimplemented in some older browser
-		if(rel === null || !$(rel).is(":text, :password, textarea")) {
-			$textarea.focus();
+	$document.on("keydown", "input[type=text]", function(e) {
+		if(e.which === 13) {
+			$(e.target).change();
 		}
 	});
+	
+	var focusCheckerTimeout = -1,
+		scheduleFocusChecker = function() {
+			window.clearTimeout(focusCheckerTimeout);
+			focusCheckerTimeout = window.setTimeout(focusChecker, 0);
+		};
+		focusChecker = function() {
+			window.clearTimeout(focusCheckerTimeout);
+			focusCheckerTimeout = -1;
+			var $focused = $(document.activeElement);
+			if(!$focused.is(":text, :password, textarea, select")) {
+				$textarea.focus();
+			}
+		};
+	$document.on("focusout", scheduleFocusChecker);
+	$document.on("change", "select", function(e) {
+		e.target.blur();
+		scheduleFocusChecker();
+	});
+	
 	$textarea.focus();
 	
 	
