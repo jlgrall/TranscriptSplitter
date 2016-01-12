@@ -42,5 +42,5 @@ Splitter mode code is inspired by [JQuery Lined TextArea plugin](http://alan.blo
 
 **Splitter mode:**
 
-- Before using [YouTube's transcribe and automatic timing](https://support.google.com/youtube/answer/2734796#transcribe), you want to split the lines according to the [recommended format](https://support.google.com/youtube/answer/2734799). Transcript Splitter will save you time.
+- Before using [YouTube's transcribe and automatic timing](https://support.google.com/youtube/answer/2734796#transcribe), you want to split the lines according to the [recommended formatting](https://support.google.com/youtube/answer/2734799). Transcript Splitter will save you time.
 - Fix the line length of a SubRip (.srt), a WebVTT (.vtt) or other files by hand with visual assistance.
