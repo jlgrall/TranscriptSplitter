@@ -2,6 +2,10 @@
 "use strict";
 	
 	/* Textarea helpers */
+	
+	// TODO: replace all the selection code with https://developer.mozilla.org/en-US/docs/Web/API/Selection
+	//		 (Also see: https://github.com/timdown/rangyinputs/blob/master/rangyinputs-jquery-src.js)
+	//		 Also see transcriptsplitter.js
 	var // Inspired by: http://stackoverflow.com/questions/11076975/insert-text-into-textarea-at-cursor-position-javascript/11077016#11077016
 		insertAtSelection = function(myField, myValue) {
 			//IE support
@@ -69,9 +73,6 @@
 				end: end
 			};
 		},
-		// TODO: replace all the selection code with https://developer.mozilla.org/en-US/docs/Web/API/Selection
-		//		 (Also see: https://github.com/timdown/rangyinputs/blob/master/rangyinputs-jquery-src.js)
-		//		 Also see transcriptsplitter.js
 		// Inspired from: https://richonrails.com/articles/text-area-manipulation-with-jquery
 		setInputSelection = function(input, selectionStart, selectionEnd) {
 			if (input.createTextRange) {
@@ -232,6 +233,8 @@
 					case 224:	// Mac Command
 						break;
 					default:
+						// TODO: use oninput instead of onchange and onkeyup
+						//       See: https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/oninput
 						self.transcriptChanged();
 				}
 			});
