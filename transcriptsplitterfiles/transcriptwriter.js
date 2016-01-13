@@ -88,6 +88,8 @@
 		},
 		toggleWrapSelectionWithTag = function($textarea, tag) {
 			var textarea = $textarea[0],
+				scrollTop = textarea.scrollTop,
+				scrollLeft = textarea.scrollLeft,
 				text = $textarea.val(),
 				sel = getInputSelection(textarea),
 				openingTag = "<" + tag + ">",
@@ -108,6 +110,8 @@
 							+ text.substring(sel.end, text.length));
 				setInputSelection(textarea, sel.start + openingTag.length, sel.end + openingTag.length);
 			}
+			textarea.scrollTop = scrollTop;
+			textarea.scrollLeft = scrollLeft;
 		};
 	
 	/* Time related helpers */
