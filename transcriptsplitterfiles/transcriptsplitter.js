@@ -240,8 +240,10 @@
 			linesInfos[0].elem = elem;
 			scrolledlinesDiv.prepend(elem);
 			
+			var self = this;
+			
 			/* Event: text changes */
-			var textareaLineHeight = parseInt($textarea.css("lineHeight"), 10);
+			this.updateLineHeight();
 			$textarea.on("change.transcriptSplitter keyup.transcriptSplitter", function(e) {
 				//var start = Date.now();
 				var text = $textarea.val();
@@ -251,8 +253,10 @@
 					var caret = findCaret(ta);
 					
 					if(which === 46) which = 8;	// Delete => Backspace
-					if(which === 8 && oldText.charAt(caret) === "\n") {	// Backspace
-						ta.scrollTop -= textareaLineHeight;
+					if(which === 8 && oldText.charAt(caret) === "\n") {	// Backspace (and Delete)
+						if(ta.scrollTop !== 0 && ta.scrollTop !== ta.scrollHeight) {
+							ta.scrollTop -= self.textareaLineHeight;
+						}
 						if(text.charAt(caret - 1) !== "\n" && caret > 0) {
 							var spacePos = findCharAroundPos(text, caret, " ", [-1, 0]);
 							if(spacePos === -1 && text.charAt(caret) !== "\n" && caret < text.length) {
@@ -261,7 +265,9 @@
 						}
 					}
 					else if(which === 13) {	// Return
-						ta.scrollTop += textareaLineHeight;
+						if(ta.scrollTop !== 0 && ta.scrollTop !== ta.scrollHeight) {
+							ta.scrollTop += self.textareaLineHeight;
+						}
 						var spacePos = findCharAroundPos(text, caret, " ", [-2, 0]);
 						if(spacePos !== -1) {
 							text = spliceTextarea(ta, text, spacePos, 1);
@@ -326,6 +332,11 @@
 		// default options
 		options: {
 			keepWidth: true
+		},
+		updateLineHeight: function() {
+			var $clone = this.$textarea.clone().val(Array(500).join("\n")).insertBefore(this.$textarea);
+			this.textareaLineHeight = ($clone[0].scrollHeight + $clone[0].clientHeight) / 500;
+			$clone.remove();
 		},
 		destroy: function() {
 			var $textarea = this.$textarea;
