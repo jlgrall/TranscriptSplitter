@@ -439,13 +439,19 @@ $(function($) {
 	
 	$(".button-transcript-splitSentences").click(function(e) {
 		if(!isSplitterMode()) return;
-		var text = $textarea.val(),
-			// Original: text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
-			newText = text.replace(/(\.|\!|\?)(?: \n?|\n)\n?/g, function(match, p1, offset) {
-				return text.length > offset + match.length ? p1 + "\n\n" : match;
-			});
-		if(newText !== text) {
-			$textarea.val(newText).focus().change();
+		var msg = [
+				"This will make sure that every sentence is separated by an empty line.",
+				"Check the result to see that there was no false positive.",
+			];
+		if(window.confirm(msg.join("\n"))) {
+			var text = $textarea.val(),
+				// Original: text.replace(/(\.|\!|\?)( |\n(?!\n))/g, "$1\n\n");
+				newText = text.replace(/(\.|\!|\?)(?: \n?|\n)\n?/g, function(match, p1, offset) {
+					return text.length > offset + match.length ? p1 + "\n\n" : match;
+				});
+			if(newText !== text) {
+				$textarea.val(newText).focus().change();
+			}
 		}
 	});
 	
