@@ -477,18 +477,33 @@ $(function($) {
 	});
 	
 	var focusCheckerTimeout = -1,
+		mouseDownCounter = 0,	// Counter is needed if more than 1 button is pressed
+		pendingFocusCheck = false,
 		scheduleFocusChecker = function() {
 			window.clearTimeout(focusCheckerTimeout);
 			focusCheckerTimeout = window.setTimeout(focusChecker, 0);
-		};
+		},
 		focusChecker = function() {
 			window.clearTimeout(focusCheckerTimeout);
 			focusCheckerTimeout = -1;
+			if(mouseDownCounter > 0) {
+				pendingFocusCheck = true;
+				return;
+			}
+			pendingFocusCheck = false;
 			var $focused = $(document.activeElement);
 			if(!$focused.is(":text, :password, textarea, select")) {
 				$textarea.focus();
 			}
 		};
+	$document.on("mousedown", function() {
+		mouseDownCounter++;
+	}).on("mouseup", function() {
+		mouseDownCounter--;
+		if(mouseDownCounter === 0 && pendingFocusCheck) {
+			scheduleFocusChecker();
+		}
+	});
 	$document.on("focusout", scheduleFocusChecker);
 	$document.on("change", "select", function(e) {
 		e.target.blur();
