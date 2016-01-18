@@ -277,13 +277,13 @@
 		},
 		saveAll: function() {
 			this.savePlayerSource();
-			this.saveProgress();
 			this.saveAllStoreStates();
+			this.saveProgress();
 		},
 		loadAll: function() {
 			this.loadPlayerSource();
-			this.loadProgress();
 			this.loadAllStoreStates();
+			this.loadProgress();
 		},
 		destroy: function() {
 			$(window).off("unload", this.onunload);
