@@ -199,6 +199,18 @@
 						}
 					}
 				}
+				if(e.which === 37 && e.ctrlKey && e.altKey) {	// Left arrow key with Ctrl and Alt keys
+					e.preventDefault();
+					if(player) {
+						player.currentTime = player.currentTime - 5 * options.player.playbackRate;
+					}
+				}
+				if(e.which === 39 && e.ctrlKey && e.altKey) {	// Right arrow key with Ctrl and Alt keys
+					e.preventDefault();
+					if(player) {
+						player.currentTime = player.currentTime + 5 * options.player.playbackRate;
+					}
+				}
 				if(e.metaKey && !e.shiftKey && !e.altKey) {	// Ctrl on Windows, Command on Mac
 					if(e.which === 66) {		// B and metaKey
 						toggleWrapSelectionWithTag($textarea, "b");
