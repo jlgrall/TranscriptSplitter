@@ -111,10 +111,13 @@
 					removeOldLinesNb = modifiedOldLinesNb - updateOldLinesNb,
 					insertNewLinesNb = modifiedLinesInfos.length - updateOldLinesNb;
 				
+				var modifiedOldLineInfos,
+					modifiedLineInfos;
+				
 				var start = unmodLines.preLines;
 				for(var i = 0; i < updateOldLinesNb; i++) {
-					var modifiedOldLineInfos = linesInfos[start + i],
-						modifiedLineInfos = modifiedLinesInfos[i];
+					modifiedOldLineInfos = linesInfos[start + i];
+					modifiedLineInfos = modifiedLinesInfos[i];
 					modifiedOldLineInfos.length = modifiedLineInfos.length;
 					updateLineElement(modifiedOldLineInfos.elem, modifiedLineInfos.length);
 				}
