@@ -225,34 +225,8 @@
 						self.transcriptChanged();
 					}
 				}
-			}).on("change.transcriptWriter", function(e) {
+			}).on("input.transcriptWriter", function(e) {
 				self.transcriptChanged();
-			}).on("keyup.transcriptWriter", function(e) {
-				switch(e.which) {	// keys list: http://unixpapa.com/js/key.html
-					case 9:		// Tab
-					case 16:	// Shift
-					case 17:	// Ctrl
-					case 18:	// Alt
-					case 20:	// CapsLock
-					case 144:	// NumLock
-					case 27:	// Esc
-					case 33:	// Page Up
-					case 34:	// Page Down
-					case 35:	// End
-					case 36:	// Home
-					case 37:	// Left arrow
-					case 38:	// Up arrow
-					case 39:	// Right arrow
-					case 91:	// Windows Left Start
-					case 92:	// Windows Right Start
-					case 93:	// Windows Menu
-					case 224:	// Mac Command
-						break;
-					default:
-						// TODO: use oninput instead of onchange and onkeyup
-						//       See: https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers/oninput
-						self.transcriptChanged();
-				}
 			});
 		};
 	

@@ -103,7 +103,7 @@
 				var transcript = this.options.store.get("state.transcript");
 				if(transcript !== null) {
 					this.lastTranscript = transcript;
-					this.options.$transcriptWriter.val(transcript);
+					this.options.$transcriptWriter.val(transcript).trigger("input").change();
 				}
 			
 				var currentTime = this.options.store.get("state.currentTime");

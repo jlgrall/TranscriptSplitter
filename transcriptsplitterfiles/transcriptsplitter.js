@@ -244,40 +244,52 @@
 			
 			/* Event: text changes */
 			this.updateLineHeight();
-			$textarea.on("change.transcriptSplitter keyup.transcriptSplitter", function(e) {
+			$textarea.on("keydown.transcriptSplitter", function(e) {
 				//var start = Date.now();
-				var text = $textarea.val();
+				if(ta.selectionEnd === ta.selectionStart) {	// Only if there is no selection
+					var text = $textarea.val();
 				
-				var which = e.which;
-				if(e.type === "keyup" && which === 8 || which === 13 || which === 46) {	// Backspace || Return || Delete
-					var caret = findCaret(ta);
+					var which = e.which;
+					if(which === 8 || which === 13 || which === 46) {	// Backspace || Return || Delete
+						var caret = findCaret(ta);
 					
-					if(which === 46) which = 8;	// Delete => Backspace
-					if(which === 8 && oldText.charAt(caret) === "\n") {	// Backspace (and Delete)
-						if(ta.scrollTop !== 0 && ta.scrollTop !== ta.scrollHeight) {
-							ta.scrollTop -= self.textareaLineHeight;
+						ta.selectionEnd === ta.selectionStart
+					
+						if(which === 8 || which === 46) {	// Backspace || Delete
+							var removeDir = which === 8 ? -1 : 0,	// The direction of the removal, relative to the caret
+								removedPos = caret + removeDir;
+							if(text.charAt(removedPos) === "\n") {
+								if(ta.scrollTop !== 0 && ta.scrollTop !== ta.scrollHeight) {
+									ta.scrollTop -= self.textareaLineHeight;
+								}
+								var prevChar = text.charAt(removedPos - 1),
+									nextChar = text.charAt(removedPos + 1);
+								if(prevChar !== "\n" && nextChar !== "\n" && removedPos > 0 && removedPos < text.length - 1) {
+									var spacePos = findCharAroundPos(text, removedPos, " ", [-1, 1]);
+									if(spacePos === -1) {
+										text = spliceTextarea(ta, text, removedPos, 0, " ");
+									}
+								}
+							}
 						}
-						if(text.charAt(caret - 1) !== "\n" && caret > 0) {
+						else if(which === 13) {	// Return
+							if(ta.scrollTop !== 0) {
+								ta.scrollTop += self.textareaLineHeight;
+							}
 							var spacePos = findCharAroundPos(text, caret, " ", [-1, 0]);
-							if(spacePos === -1 && text.charAt(caret) !== "\n" && caret < text.length) {
-								text = spliceTextarea(ta, text, caret, 0, " ");
+							if(spacePos !== -1) {
+								text = spliceTextarea(ta, text, spacePos, 1);
 							}
 						}
 					}
-					else if(which === 13) {	// Return
-						if(ta.scrollTop !== 0 && ta.scrollTop !== ta.scrollHeight) {
-							ta.scrollTop += self.textareaLineHeight;
-						}
-						var spacePos = findCharAroundPos(text, caret, " ", [-2, 0]);
-						if(spacePos !== -1) {
-							text = spliceTextarea(ta, text, spacePos, 1);
-						}
-					}
 				}
-				
+				//console.log(Date.now() - start, "keydown");
+			}).on("input.transcriptSplitter", function(e) {
+				//var start = Date.now();
+				var text = $textarea.val();
 				updateLineLengths(scrolledlinesDiv, linesInfos, text, oldText);
 				oldText = text;
-				//console.log(Date.now() - start);
+				//console.log(Date.now() - start, "oninput");
 			});
 			
 			/*  */
