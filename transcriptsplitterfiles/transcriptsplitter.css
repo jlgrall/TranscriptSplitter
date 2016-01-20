@@ -1,4 +1,5 @@
 /* TranscriptSplitter v0.1 - Jean-Louis Grall - MIT License - https://github.com/jlgrall/TranscriptSplitter */
+
 /* All flexbox autoprefixes made with: http://pleeease.io/play/ */
 
 
@@ -11,7 +12,7 @@
 
 
 .transsplitterwrap {
-	border: 1px solid #c0c0c0;
+	border: 1px solid #C0C0C0;
 	padding: 4px;
 }
 
@@ -31,7 +32,7 @@
 .transsplitterwrap .lines {
 	overflow: hidden;
 	width: 40px;
-	border-right: 1px solid #c0c0c0;
+	border-right: 1px solid #C0C0C0;
 }
 
 .transsplitterwrap .scrolledlines {
