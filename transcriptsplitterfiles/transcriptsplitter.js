@@ -13,8 +13,6 @@
 			return Array_splice.apply(array, spliceArgs);
 		};
 	
-	/* The max line length that the user aims for: */
-	var maxLength = 42;
 	
 	var getUnmodifiedLinesInText = function(text, oldText) {
 			var tl = text.length,
@@ -67,7 +65,7 @@
 		createLineElement = function() {
 			return baseLineinfoElement.clone();
 		},
-		updateLineElement = function(elem, length) {
+		updateLineElement = function(elem, length, maxLength) {
 			if(length === 0) elem.addClass("empty");
 			else elem.removeClass("empty");
 			if(length > maxLength) elem.addClass("error");
@@ -93,7 +91,7 @@
 			if(i > start || start === from) linesDescr.push(createLineInfo(text, start, i));
 			return linesDescr;
 		},
-		updateLineLengths = function(scrolledlinesDiv, linesInfos, text, oldText) {
+		updateLineLengths = function(scrolledlinesDiv, linesInfos, text, oldText, maxLength) {
 			var unmodLines = getUnmodifiedLinesInText(text, oldText),
 				hasModifiedLines = text.length !== oldText.length || unmodLines.preLength !== text.length || unmodLines.postLength !== 0;
 			
@@ -119,7 +117,7 @@
 					modifiedOldLineInfos = linesInfos[start + i];
 					modifiedLineInfos = modifiedLinesInfos[i];
 					modifiedOldLineInfos.length = modifiedLineInfos.length;
-					updateLineElement(modifiedOldLineInfos.elem, modifiedLineInfos.length);
+					updateLineElement(modifiedOldLineInfos.elem, modifiedLineInfos.length, maxLength);
 				}
 				var insertLinesInfos = modifiedLinesInfos.slice(updateOldLinesNb);
 				start += updateOldLinesNb;
@@ -133,7 +131,7 @@
 					var insertElems = [];
 					for(i = 0; i < insertNewLinesNb; i++) {
 						modifiedLineInfos = insertLinesInfos[i];
-						var elem = updateLineElement(createLineElement(), modifiedLineInfos.length);
+						var elem = updateLineElement(createLineElement(), modifiedLineInfos.length, maxLength);
 						modifiedLineInfos.elem = elem;
 						insertElems.push(elem);
 					}
@@ -145,17 +143,15 @@
 			}
 		};
 	
-	var getCharWidthFor = function(elem) {
+	var getCharWidthFor = function(elem, ch) {
 			var temp = $("<span></span>").css({
 					"display": "inline",
 					"fontSize": elem.css("fontSize"),
 					"fontFamily": elem.css("fontFamily"),
 					"lineHeight": elem.css("lineHeight")
-				}),
-				tempText = ["m"];
-			while(tempText.length < 200) tempText.push("m");
-			temp.text(tempText.join("")).insertAfter(elem);
-			var charWidth = temp.innerWidth() / 200;
+				});
+			temp.text(Array(1001).join(ch)).insertAfter(elem);
+			var charWidth = temp.innerWidth() / 1000;
 			temp.remove();
 			return charWidth;
 		},
@@ -217,17 +213,21 @@
 				linesDiv = $("<div class='lines'></div>").appendTo(transsplitterwrapDiv),
 				scrolledlinesDiv = $("<div class='scrolledlines'></div>").appendTo(linesDiv),
 				linedTextAreaDiv = $("<div class='textareawrap'></div>").appendTo(transsplitterwrapDiv),
-				linePosDiv = $("<div class='linepos'>-1</div>").appendTo(transsplitterwrapDiv);
+				linePosDiv = $("<div class='linepos' />").appendTo(transsplitterwrapDiv),
+				lineCaretPos = $("<span class='linecaretpos' />").appendTo(linePosDiv),
+				lineMaxLength = $("<span class='linemaxlength' />").appendTo(linePosDiv),
+				lineWidthChar = $("<span class='linewidthchar' />").appendTo(linePosDiv);
 			
 			this.$transsplitterwrapDiv = transsplitterwrapDiv;
+			this.linePosDiv = linePosDiv;
+			this.lineCaretPos = lineCaretPos;
+			this.lineMaxLength = lineMaxLength;
+			this.lineWidthChar = lineWidthChar;
 			
 			transsplitterwrapDiv.insertAfter($textarea);
 			linedTextAreaDiv.append($textarea);
 			
-			/* Positions of backgrounds relative to the characters width */
-			var charWidth = getCharWidthFor($textarea),
-				bgPos = [charWidth * 2 * maxLength, charWidth * maxLength];
-				
+			
 			this.originalCSSWidth = ta.style.width;
 			
 			/* Narrow the width of $textarea */
@@ -238,8 +238,8 @@
 			
 			/* Keep informations for each line */
 			var oldText = "",
-				linesInfos = [createLineInfo(oldText, 0, 0)],
-				elem = updateLineElement(createLineElement(), 0);
+				linesInfos = this.linesInfos = [createLineInfo(oldText, 0, 0)],
+				elem = updateLineElement(createLineElement(), 0, options.maxLength);
 			linesInfos[0].elem = elem;
 			scrolledlinesDiv.prepend(elem);
 			
@@ -255,8 +255,6 @@
 					var which = e.which;
 					if(which === 8 || which === 13 || which === 46) {	// Backspace || Return || Delete
 						var caret = findCaret(ta);
-					
-						ta.selectionEnd === ta.selectionStart
 					
 						if(which === 8 || which === 46) {	// Backspace || Delete
 							var removeDir = which === 8 ? -1 : 0,	// The direction of the removal, relative to the caret
@@ -290,29 +288,24 @@
 			}).on("input.transcriptSplitter", function(e) {
 				//var start = Date.now();
 				var text = $textarea.val();
-				updateLineLengths(scrolledlinesDiv, linesInfos, text, oldText);
+				updateLineLengths(scrolledlinesDiv, linesInfos, text, oldText, self.maxLength);
 				oldText = text;
 				//console.log(Date.now() - start, "oninput");
 			});
 			
 			/*  */
-			var checkLinePos = function() {
-					var linePos = findCaretInLine(ta, $textarea.val());
-					if(linePos > maxLength) linePosDiv.addClass("error");
-					else linePosDiv.removeClass("error");
-					linePosDiv.text(linePos + "/" + maxLength);
-				},
+			var checkCaretPosBound = this.checkCaretPos.bind(this),
 				lastSelectionStart = -1,
 				lastSelectionEnd = -1,
 				findLinePos_mousemove = function(e) {
 					if(ta.selectionStart !== lastSelectionStart || ta.selectionEnd !== lastSelectionEnd) {
 						lastSelectionStart = ta.selectionStart;
 						lastSelectionEnd = ta.selectionEnd;
-						checkLinePos();
+						self.checkCaretPos();
 					}
 				};
 			$textarea.on("keydown.transcriptSplitter click.transcriptSplitter", function(e) {
-				setTimeout(checkLinePos);
+				window.setTimeout(checkCaretPosBound, 0);
 			}).on("mousedown.transcriptSplitter", function(e) {
 				$textarea.on("mousemove.transcriptSplitter", findLinePos_mousemove);
 			}).on("mouseup.transcriptSplitter", function(e) {
@@ -333,25 +326,76 @@
 				}
 				var scrollLeft = ta.scrollLeft;
 				if(scrollLeft !== lastScrollLeft) {
-					setbgPos($textarea, bgPos, scrollLeft);
+					setbgPos($textarea, self.bgPos, scrollLeft);
 					lastScrollLeft = scrollLeft;
 				}
 			});
 			
-			setbgPos($textarea, bgPos, ta.scrollLeft);
+			
+			/* Positions of backgrounds relative to the characters width */
+			this.bgPos = [];
+			this.setCharWidthChar(options.charWidthChar);
+			this.setMaxLength(options.maxLength);
+			setbgPos($textarea, this.bgPos, ta.scrollLeft);
+			
 			$textarea.change();
-			checkLinePos();
+			this.checkCaretPos();
 	};
 	
 	transcriptSplitter.prototype = {
 		// default options
 		options: {
-			keepWidth: true
+			keepWidth: true,
+			charWidthChar: "x",
+			maxLength: 42,	// The max line length that the user wants to split at
 		},
 		updateLineHeight: function() {
 			var $clone = this.$textarea.clone().val(Array(500).join("\n")).insertBefore(this.$textarea);
 			this.textareaLineHeight = ($clone[0].scrollHeight + $clone[0].clientHeight) / 500;
 			$clone.remove();
+		},
+		checkCaretPos: function() {
+			var maxLength = this.options.maxLength,
+				linePos = findCaretInLine(this.textarea, this.$textarea.val()),
+				linePosDiv = this.linePosDiv;
+			if(linePos > maxLength) linePosDiv.addClass("error");
+			else linePosDiv.removeClass("error");
+			this.lineCaretPos.text(linePos);
+		},
+		getMaxLength: function(lineLength) {
+			return this.options.maxLength;
+		},
+		setMaxLength: function(lineLength) {
+			var maxLength = this.options.maxLength = lineLength,
+				linesInfos = this.linesInfos;
+			
+			for(var i = 0; i < linesInfos.length; i++){
+				updateLineElement(linesInfos[i].elem, linesInfos[i].length, maxLength);
+			}
+			
+			this._updateBgPos();
+			
+			this.lineMaxLength.text(lineLength);
+			this.checkCaretPos();
+		},
+		getCharWidthChar: function() {
+			return this.options.charWidthChar;
+		},
+		setCharWidthChar: function(character) {
+			this.options.charWidthChar = character;
+			this.lineWidthChar.text(character);
+			this.updateCharWidth();
+		},
+		updateCharWidth: function() {
+			this.charWidth = getCharWidthFor(this.$textarea, this.options.charWidthChar);
+			this._updateBgPos();
+		},
+		_updateBgPos: function() {
+			var nbBg = 4;
+			for(var i = 0; i < nbBg; i++) {
+				this.bgPos[i] = this.charWidth * (nbBg - i) * this.options.maxLength;
+			}
+			setbgPos(this.$textarea, this.bgPos, this.textarea.scrollLeft);
 		},
 		destroy: function() {
 			var $textarea = this.$textarea;

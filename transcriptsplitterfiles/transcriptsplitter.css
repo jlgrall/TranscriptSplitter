@@ -59,6 +59,21 @@
 	width: 60px;
 	text-align: right;
 }
+.transsplitterwrap .linecaretpos {
+	
+}
+.transsplitterwrap .linemaxlength:before {
+	content: "/";
+}
+.transsplitterwrap .linewidthchar {
+	display: none;
+}
+.transsplitterwrap .linewidthchar:before {
+	content: " '";
+}
+.transsplitterwrap .linewidthchar:after {
+	content: "'";
+}
 
 .transsplitterwrap .scrolledlines,
 .textareawrap textarea {
@@ -85,19 +100,27 @@
 
 .textareawrap textarea {
 	/* For Chrome 25 and Safari 6, iOS 6.1, Android 4.3 */
-	background-image: -webkit-linear-gradient(left, #fcc, #fcc),
-					  -webkit-linear-gradient(left, #fdd, #fdd);
+	background-image: -webkit-linear-gradient(left, #FAA, #FAA),
+					  -webkit-linear-gradient(left, #FBB, #FBB),
+					  -webkit-linear-gradient(left, #FCC, #FCC),
+					  -webkit-linear-gradient(left, #FDD, #FDD);
 	/* For Firefox (3.6 to 15) */
-	background-image:  -moz-linear-gradient(left, #fcc, #fcc),
-					   -moz-linear-gradient(left, #fdd, #fdd);
+	background-image:    -moz-linear-gradient(left, #FAA, #FAA),
+					     -moz-linear-gradient(left, #FBB, #FBB),
+					     -moz-linear-gradient(left, #FCC, #FCC),
+					     -moz-linear-gradient(left, #FDD, #FDD);
 	/* For old Opera (11.1 to 12.0) */ 
-	background-image:    -o-linear-gradient(left, #fcc, #fcc),
-					     -o-linear-gradient(left, #fdd, #fdd);
+	background-image:      -o-linear-gradient(left, #FAA, #FAA),
+					       -o-linear-gradient(left, #FBB, #FBB),
+					       -o-linear-gradient(left, #FCC, #FCC),
+					       -o-linear-gradient(left, #FDD, #FDD);
 	/* Standard syntax */ 
-	background-image:       linear-gradient(to right, #fcc, #fcc),
-					        linear-gradient(to right, #fdd, #fdd);
-	background-position:  10000px 0, 10000px 0;
-	background-size: 1000% 100%, 1000% 100%;
-	background-repeat: no-repeat, no-repeat;
-	background-origin: content-box, content-box;
+	background-image:         linear-gradient(to right, #FAA, #FAA),
+					          linear-gradient(to right, #FBB, #FBB),
+					          linear-gradient(to right, #FCC, #FCC),
+					          linear-gradient(to right, #FDD, #FDD);
+	background-position:  10000px 0, 10000px 0, 10000px 0, 10000px 0;
+	background-size: 1000% 100%, 1000% 100%, 1000% 100%, 1000% 100%;
+	background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+	background-origin: content-box, content-box, content-box, content-box;
 }

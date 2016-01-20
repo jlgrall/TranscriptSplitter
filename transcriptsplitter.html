@@ -211,6 +211,7 @@
 				<li class="shortcut"><span class="action">Add/remove underline tags</span>: <span class="keys">Ctrl + U (Mac: Command + U)</span></li>
 			</ul>
 			<p class="tip">Double-click timestamps in the transcript to seek the video</p>
+			<p class="info">When using a proportional font, the visual line width is simulated from the width of the 'x' character repeated multiple times.</p>
 		</div>
 	</div>
 </div>
@@ -426,7 +427,8 @@ $(function($) {
 		if($textarea[0].style.fontFamily) {
 			styledFontElems.css("fontSize", "");
 			styledFontElems.css("fontFamily", "");
-			$textarea.css("backgroundImage", "");
+			$textarea.transcriptSplitter("updateCharWidth");
+			//$textarea.css("backgroundImage", "");
 		}
 		else {
 			var oldHeight = $textarea.innerHeight();	
@@ -434,7 +436,8 @@ $(function($) {
 			var height = $textarea.innerHeight(),
 				fontSize = parseInt($textarea.css("fontSize"), 10);
 			styledFontElems.css("fontSize", fontSize * oldHeight / height);
-			$textarea.css("backgroundImage", "none");
+			$textarea.transcriptSplitter("updateCharWidth");
+			//$textarea.css("backgroundImage", "none");
 		}
 		ta.scrollTop = oldScrollPercent * ta.scrollHeight - ta.clientHeight/2;
 	});
